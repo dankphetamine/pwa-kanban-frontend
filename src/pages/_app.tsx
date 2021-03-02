@@ -4,7 +4,12 @@ import { createClient, Provider } from 'urql';
 import theme from '../theme';
 import { gqlUrl } from '../utils/constants';
 
-const client = createClient({ url: gqlUrl });
+const client = createClient({
+	url: gqlUrl,
+	fetchOptions: {
+		credentials: 'include',
+	},
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
