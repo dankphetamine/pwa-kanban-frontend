@@ -6,20 +6,22 @@ import { InputFieldProps } from '../utils/props';
 import { capitalizeString } from '../utils/text';
 
 export const InputField: FC<InputFieldProps> = ({ type, label, ...props }) => {
-	const [field, { error }] = useField(props.name);
+	const [fieldProps, { error }] = useField(props.name);
 
 	return (
 		<FormControl isInvalid={!!error} /* casting to boolean */>
-			<FormLabel htmlFor={field.name}>
-				{label ? capitalizeString(field.name.replace(/([A-Z][a-z])/g, ' $1')) : ''}
+			<FormLabel htmlFor={fieldProps.name}>
+				{label ? capitalizeString(fieldProps.name.replace(/([A-Z][a-z])/g, ' $1')) : ''}
 			</FormLabel>
 			<Input
-				{...field}
+				{...fieldProps}
 				{...props}
-				id={field.name}
+				id={fieldProps.name}
 				type={type}
-				value={props.value}
-				placeholder={props.placeholder ? capitalizeString(field.name.replace(/([A-Z][a-z])/g, ' $1')) : ''}
+				value={fieldProps.value}
+				placeholder={
+					props.placeholder ? capitalizeString('enter ' + fieldProps.name.replace(/([A-Z][a-z])/g, ' $1')) : ''
+				}
 			/>
 			<FormErrorMessage>{error ?? null}</FormErrorMessage>
 		</FormControl>
