@@ -1,2 +1,3 @@
 .next/*
 prisma/migrations/*
+graphql/generated/*
