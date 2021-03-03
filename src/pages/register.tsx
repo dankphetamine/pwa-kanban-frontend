@@ -3,7 +3,9 @@ import { Form, Formik } from 'formik';
 import { useRouter } from 'next/dist/client/router';
 import { Container } from '../components/Container';
 import { InputField } from '../components/InputField';
+import Link from '../components/NavigationLink';
 import { useRegisterMutation } from '../graphql/generated/graphql';
+import { Routes } from '../utils/constants';
 
 const Register = () => {
 	const [, register] = useRegisterMutation();
@@ -46,6 +48,9 @@ const Register = () => {
 								</Form>
 							)}
 						</Formik>
+						<Box mt={6} textAlign="center">
+							<Link href={Routes.login} text="Or click here to log in" />
+						</Box>
 					</Box>
 				</Stack>
 			</Flex>
