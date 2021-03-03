@@ -19,9 +19,7 @@ export const InputField: FC<InputFieldProps> = ({ type, label, ...props }) => {
 				id={fieldProps.name}
 				type={type}
 				value={fieldProps.value}
-				placeholder={
-					props.placeholder ? capitalizeString('enter ' + fieldProps.name.replace(/([A-Z][a-z])/g, ' $1')) : ''
-				}
+				placeholder={props.placeholder ? capitalizeString(fieldProps.name.replace(/([A-Z][a-z])/g, ' $1')) : ''}
 			/>
 			<FormErrorMessage>{error ?? null}</FormErrorMessage>
 		</FormControl>
