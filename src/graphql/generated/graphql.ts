@@ -51,6 +51,7 @@ export type User = {
   id: Scalars['ID'];
   email: Scalars['String'];
   name?: Maybe<Scalars['String']>;
+  image?: Maybe<Scalars['String']>;
   posts?: Maybe<Array<Post>>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
@@ -99,7 +100,7 @@ export type GetCurrentUserQuery = (
   { __typename?: 'Query' }
   & { getCurrentUser?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'name'>
+    & Pick<User, 'id' | 'email' | 'name' | 'image'>
   )> }
 );
 
@@ -138,6 +139,7 @@ export const GetCurrentUserDocument = gql`
     id
     email
     name
+    image
   }
 }
     `;

@@ -3,5 +3,6 @@ query GetCurrentUser {
 		id
 		email
 		name
+		image
 	}
 }
