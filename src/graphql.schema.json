@@ -112,7 +112,7 @@
             "deprecationReason": null
           },
           {
-            "name": "getSelf",
+            "name": "getCurrentUser",
             "description": null,
             "args": [],
             "type": {
