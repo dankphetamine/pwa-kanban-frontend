@@ -1,17 +1,17 @@
 import { Link as ChakraLink, LinkProps as ChakraLinkProps } from '@chakra-ui/react';
-import Link, { LinkProps } from 'next/link';
+import NextLink, { LinkProps } from 'next/link';
 import { capitalizeString } from '../utils/text';
 
 type AccessibleLinkProps = LinkProps & ChakraLinkProps;
 
-const NavLink = ({ href, isExternal, as, text }: AccessibleLinkProps & { text?: string }) => {
+const Link = ({ href, isExternal, as, text }: AccessibleLinkProps & { text?: string }) => {
 	return (
-		<Link href={href} as={as} passHref>
+		<NextLink href={href} as={as} passHref>
 			<ChakraLink isExternal={isExternal}>
 				{text ? capitalizeString(text) : capitalizeString(href.split('/').pop()!) ?? capitalizeString(href)}
 			</ChakraLink>
-		</Link>
+		</NextLink>
 	);
 };
 
-export default NavLink;
+export default Link;

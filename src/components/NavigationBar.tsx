@@ -2,7 +2,7 @@ import { Button, chakra, Flex, Stack, useColorMode } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
 import { Colors, Routes } from '../utils/constants';
 import { ColorModeSwitch } from './ColorModeSwitch';
-import NavLink from './NavigationLink';
+import Link from './NavigationLink';
 
 const NavBar = () => {
 	const { colorMode } = useColorMode();
@@ -12,10 +12,10 @@ const NavBar = () => {
 			<Flex alignItems="center" justifyContent="space-between" mx="auto">
 				<Stack direction="row" display="flex" alignItems="center" spacing="1rem">
 					<Button onClick={() => router.push(Routes.home)}>
-						<NavLink href={Routes.home} text="home" />
+						<Link href={Routes.home} text="home" />
 					</Button>
 					<Button onClick={() => router.push(Routes.projects)}>
-						<NavLink href={Routes.projects} />
+						<Link href={Routes.projects} />
 					</Button>
 				</Stack>
 			</Flex>
