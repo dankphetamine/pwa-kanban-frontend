@@ -1,7 +1,0 @@
-query GetCurrentUser {
-	getCurrentUser {
-		...BaseUser
-		name
-		image
-	}
-}
