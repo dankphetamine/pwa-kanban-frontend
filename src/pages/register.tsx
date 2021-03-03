@@ -1,19 +1,15 @@
 import { Box, Button, Flex, Heading, Stack } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { useMutation } from 'urql';
+import { useRouter } from 'next/dist/client/router';
 import { ColorModeSwitch } from '../components/ColorModeSwitch';
 import { Container } from '../components/Container';
 import { InputField } from '../components/InputField';
+import { useRegisterMutation } from '../graphql/generated/graphql';
 
-const RegisterMutation = `mutation Register($email: String!, $password: String!) {
-  register(input: {email: $email, password: $password}) {
-    id
-    email
-  }
-}
-`;
 const Register = () => {
-	const [, register] = useMutation(RegisterMutation);
+	const [, register] = useRegisterMutation();
+	const router = useRouter();
+
 	return (
 		<Container height="100vh">
 			<Flex minH={'100vh'} align={'center'} justify={'center'}>
@@ -22,8 +18,10 @@ const Register = () => {
 					<Box rounded={'lg'} boxShadow={'dark-lg'} p={8}>
 						<Formik
 							initialValues={{ email: '', password: '' }}
-							onSubmit={values => {
-								return register(values);
+							onSubmit={async (values, actions) => {
+								const response = await register(values);
+								if (response.error) actions.setErrors({ email: response.error.message });
+								else router.push('/login');
 							}}
 						>
 							{({ isSubmitting }) => (
