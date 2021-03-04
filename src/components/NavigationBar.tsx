@@ -1,14 +1,17 @@
-import { Avatar, Button, chakra, Flex, Stack, useColorMode } from '@chakra-ui/react';
+import { Avatar, Box, Button, chakra, Flex, Skeleton, Stack, useColorMode } from '@chakra-ui/react';
+import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
-import { useGetCurrentUserQuery } from '../graphql/generated/graphql';
+import { useCurrentUserQuery, useLogOutMutation } from '../graphql/generated/graphql';
 import { Colors, Routes } from '../utils/constants';
+import { createUrqlClient } from '../utils/uqrlUtils';
 import { ColorModeSwitch } from './ColorModeSwitch';
 import Link from './NavigationLink';
 
 const NavBar = () => {
 	const { colorMode } = useColorMode();
 	const router = useRouter();
-	const [{ data }] = useGetCurrentUserQuery();
+	const [{ data, fetching }] = useCurrentUserQuery();
+	const [, logOut] = useLogOutMutation();
 
 	return (
 		<chakra.header bgColor={Colors.bgColor[colorMode]} color={Colors.color[colorMode]} w="full" p={4} shadow="lg">
@@ -21,21 +24,27 @@ const NavBar = () => {
 						<Link href={Routes.projects} />
 					</Button>
 				</Stack>
-				<Stack direction="row" display="flex" alignItems="center" spacing="1rem">
-					{!data?.getCurrentUser && (
+				<Stack direction="row" display="flex" alignItems="center" spacing="2rem">
+					{fetching && (
+						<Box>
+							<Skeleton />
+						</Box>
+					)}
+
+					{!fetching && !data?.currentUser && (
 						<Button variant="solid" onClick={() => router.push(Routes.login)}>
 							Sign in | Sign up
 						</Button>
 					)}
-					{data?.getCurrentUser && (
+					{!fetching && data?.currentUser && (
 						<>
 							<Button
 								onClick={() => router.push(Routes.profile)}
-								leftIcon={<Avatar name={data.getCurrentUser.name ?? '? ?'} src={data.getCurrentUser.image!} />}
+								leftIcon={<Avatar name={data.currentUser.name ?? '? ?'} src={data.currentUser.image!} />}
 							>
 								<Link href={Routes.profile} />
 							</Button>
-							<Button variant="solid" onClick={() => window.confirm('Are you sure you want to sign out?')}>
+							<Button variant="solid" onClick={() => window.confirm('Are you sure you want to sign out?') && logOut()}>
 								Sign out
 							</Button>
 						</>
@@ -47,4 +56,4 @@ const NavBar = () => {
 	);
 };
 
-export default NavBar;
+export default withUrqlClient(createUrqlClient)(NavBar);

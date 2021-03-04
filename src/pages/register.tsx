@@ -1,21 +1,25 @@
 import { Box, Button, Flex, Heading, Stack } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
 import { Container } from '../components/Container';
 import { InputField } from '../components/InputField';
 import Link from '../components/NavigationLink';
 import { useRegisterMutation } from '../graphql/generated/graphql';
 import { Routes } from '../utils/constants';
+import { createUrqlClient } from '../utils/uqrlUtils';
 
 const Register = () => {
 	const [, register] = useRegisterMutation();
 	const router = useRouter();
 
 	return (
-		<Container height="100vh">
+		<Container>
 			<Flex minH={'100vh'} align={'center'} justify={'center'}>
-				<Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-					<Heading fontSize={'5xl'}>Register account</Heading>
+				<Stack spacing={8} mx={'auto'} minW={'lg'} py={12} px={6}>
+					<Heading fontSize={'5xl'} minW={'lg'} textAlign={'center'}>
+						Register
+					</Heading>
 					<Box rounded={'lg'} boxShadow={'dark-lg'} p={8}>
 						<Formik
 							initialValues={{ email: '', password: '', repeatPassword: '' }}
@@ -58,4 +62,4 @@ const Register = () => {
 	);
 };
 
-export default Register;
+export default withUrqlClient(createUrqlClient)(Register);
