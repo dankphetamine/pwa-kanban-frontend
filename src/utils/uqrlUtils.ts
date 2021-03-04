@@ -1,13 +1,23 @@
-import { cacheExchange } from '@urql/exchange-graphcache';
+import { Cache, cacheExchange, QueryInput } from '@urql/exchange-graphcache';
+import { SSRExchange } from 'next-urql';
 import { dedupExchange, fetchExchange } from 'urql';
-import { CurrentUserDocument, CurrentUserQuery, LoginMutation } from './../graphql/generated/graphql';
-import { AuthCacheQuery, gqlUrl } from './constants';
+import { CurrentUserDocument, CurrentUserQuery, LoginMutation } from '../graphql/generated/graphql';
 
-export const urqlClient = ssrExchange => ({
-	url: gqlUrl,
-	fetchOptions: {
-		credentials: 'include',
-	} as const,
+const port = 4000;
+export const graphqlURL = `http://localhost:${port}/graphql`;
+
+export function AuthCacheQuery<Result, Query>(
+	cache: Cache,
+	input: QueryInput,
+	result: any,
+	query: (result: Result, query: Query) => Query,
+) {
+	return cache.updateQuery(input, data => query(result, data as any) as any);
+}
+
+export const createUrqlClient = (ssr: SSRExchange) => ({
+	url: graphqlURL,
+	fetchOptions: { credentials: 'include' } as const,
 	exchanges: [
 		dedupExchange,
 		cacheExchange({
@@ -38,7 +48,7 @@ export const urqlClient = ssrExchange => ({
 				},
 			},
 		}),
-		ssrExchange,
+		ssr,
 		fetchExchange,
 	],
 });
