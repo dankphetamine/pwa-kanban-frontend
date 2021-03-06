@@ -1,4 +1,5 @@
 import { Cache, cacheExchange, QueryInput } from '@urql/exchange-graphcache';
+import { simplePagination } from '@urql/exchange-graphcache/extras';
 import { SSRExchange } from 'next-urql';
 import { dedupExchange, fetchExchange } from 'urql';
 import { CurrentUserDocument, CurrentUserQuery, LoginMutation } from '../graphql/generated/graphql';
@@ -21,6 +22,11 @@ export const createUrqlClient = (ssr: SSRExchange) => ({
 	exchanges: [
 		dedupExchange,
 		cacheExchange({
+			resolvers: {
+				Query: {
+					Posts: simplePagination(),
+				},
+			},
 			updates: {
 				Mutation: {
 					login: (result, _args, cache, _info) => {
