@@ -17,8 +17,8 @@ const Index = () => {
 
 	return (
 		<Container>
-			<Header />
 			<Main>
+				<Header />
 				{fetching && (
 					<Box padding="6" boxShadow="lg">
 						<SkeletonText noOfLines={24} spacing={4} />
