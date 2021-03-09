@@ -16,3 +16,8 @@ export const Routes = {
 };
 
 export const isServer = () => typeof window === 'undefined';
+
+export enum Queries {
+	limit = 10,
+	limitMax = 25,
+}
