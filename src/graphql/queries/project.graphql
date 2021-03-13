@@ -1,0 +1,27 @@
+query Project($id: Float!) {
+	project(id: $id) {
+		...BaseProject
+		collaborators {
+			id
+			name
+		}
+		tasks {
+			id
+			title
+		}
+	}
+}
+
+query Projects($filter: FilterInput) {
+	projects(filter: $filter) {
+		...BaseProject
+		collaborators {
+			id
+			name
+		}
+		tasks {
+			id
+			title
+		}
+	}
+}
