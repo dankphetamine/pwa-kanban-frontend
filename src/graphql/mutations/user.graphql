@@ -1,0 +1,5 @@
+mutation UpdateUserName($email: String!, $name: String!) {
+	updateUserName(email: $email, name: $name) {
+		...BaseUser
+	}
+}
