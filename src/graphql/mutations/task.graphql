@@ -1,0 +1,12 @@
+mutation CreateTask($projectId: Float!, $title: String!, $description: String!) {
+	createTask(projectId: $projectId, title: $title, description: $description) {
+		...BaseTask
+		project {
+			id
+			name
+		}
+		reporter {
+			id
+		}
+	}
+}
