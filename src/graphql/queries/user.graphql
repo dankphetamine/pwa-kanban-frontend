@@ -1,7 +1,30 @@
 query CurrentUser {
 	currentUser {
 		...BaseUser
-		name
 		image
+		projects {
+			id
+			name
+		}
+	}
+}
+
+query UserByEmail($email: String!) {
+	user(email: $email) {
+		...BaseUser
+		projects {
+			id
+			name
+		}
+	}
+}
+
+query Users($filter: FilterInput) {
+	users(filter: $filter) {
+		...BaseUser
+		projects {
+			id
+			name
+		}
 	}
 }
