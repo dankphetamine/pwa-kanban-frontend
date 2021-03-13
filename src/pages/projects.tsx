@@ -5,16 +5,16 @@ import { Container } from '../components/Container';
 import { Header } from '../components/Header';
 import { Main } from '../components/Main';
 import { ProjectCard } from '../components/ProjectCard';
-import { usePostsQuery } from '../graphql/generated/graphql';
+import { useProjectsQuery } from '../graphql/generated/graphql';
 import { createUrqlClient } from '../utils/uqrlUtils';
 
 const Projects = () => {
 	const [variables] = useState({ limit: 5, offset: 0 });
-	const [{ data, fetching }] = usePostsQuery({ variables: { filter: variables } });
+	const [{ data, fetching }] = useProjectsQuery({ variables: { filter: variables } });
 	// const [{ data, fetching }] = usePostsQuery({ variables: {} });
 
 	console.log(variables);
-	console.log(data?.posts?.length);
+	console.log(data?.projects?.length);
 
 	return (
 		<Container width="50">
