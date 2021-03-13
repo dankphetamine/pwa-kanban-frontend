@@ -1,0 +1,7 @@
+fragment BaseProject on Project {
+	id
+	name
+	description
+	createdAt
+	updatedAt
+}

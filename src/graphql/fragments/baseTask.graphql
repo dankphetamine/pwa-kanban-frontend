@@ -1,0 +1,7 @@
+fragment BaseTask on Task {
+	id
+	title
+	status
+	createdAt
+	updatedAt
+}
