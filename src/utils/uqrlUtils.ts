@@ -3,9 +3,7 @@ import { simplePagination } from '@urql/exchange-graphcache/extras';
 import { SSRExchange } from 'next-urql';
 import { dedupExchange, fetchExchange } from 'urql';
 import { CurrentUserDocument, CurrentUserQuery, LoginMutation } from '../graphql/generated/graphql';
-
-const port = 4000;
-export const graphqlURL = `http://localhost:${port}/graphql`;
+import { graphqlURL } from './constants';
 
 export function AuthCacheQuery<Result, Query>(
 	cache: Cache,
