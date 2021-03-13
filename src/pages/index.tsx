@@ -4,16 +4,15 @@ import { useState } from 'react';
 import { Container } from '../components/Container';
 import { Header } from '../components/Header';
 import { Main } from '../components/Main';
-import { usePostsQuery } from '../graphql/generated/graphql';
+import { useProjectsQuery } from '../graphql/generated/graphql';
 import { createUrqlClient } from '../utils/uqrlUtils';
 
 const Index = () => {
 	const [variables, setVariables] = useState({ limit: 5, offset: 0 });
-	const [{ data, fetching }] = usePostsQuery({ variables: { filter: variables } });
-	// const [{ data, fetching }] = usePostsQuery({ variables: {} });
+	const [{ data, fetching }] = useProjectsQuery({ variables: { filter: variables } });
 
 	console.log(variables);
-	console.log(data?.posts?.length);
+	console.log(data?.projects?.length);
 
 	return (
 		<Container>
@@ -25,23 +24,21 @@ const Index = () => {
 					</Box>
 				)}
 				<List spacing={4} my={0}>
-					{!fetching && data?.posts && (
+					{!fetching && data?.projects && (
 						<>
-							{data.posts.map(post => {
-								return (
-									<ListItem key={post.id}>
-										<Text fontSize={'xl'}>{post.title}</Text>
-										<Text fontSize={'small'}>{post.content}</Text>
-									</ListItem>
-								);
-							})}
+							{data.projects.map(p => (
+								<ListItem key={p.id}>
+									<Text fontSize={'xl'}>{p.name}</Text>
+									<Text fontSize={'small'}>{p.description}</Text>
+								</ListItem>
+							))}
 						</>
 					)}
 				</List>
 				<Flex justifyContent="space-between">
 					<Button
 						onClick={() => {
-							if (data?.posts) {
+							if (data?.projects) {
 								const osVal = Math.max(0, variables.offset - variables.limit);
 
 								setVariables({ limit: variables.limit, offset: osVal });
@@ -55,14 +52,14 @@ const Index = () => {
 					</Button>
 					<Button
 						onClick={() => {
-							if (data?.posts) {
-								const osVal = Math.max(data?.posts?.length + (variables.offset ?? 0));
+							if (data?.projects) {
+								const osVal = Math.max(data?.projects?.length + (variables.offset ?? 0));
 								setVariables({ limit: variables.limit, offset: osVal });
 							}
 						}}
 						variant="solid"
 						isLoading={fetching}
-						isDisabled={(data?.posts?.length ?? 0) < variables.limit}
+						isDisabled={(data?.projects?.length ?? 0) < variables.limit}
 					>
 						Go forward
 					</Button>
