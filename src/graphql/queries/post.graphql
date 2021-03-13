@@ -1,7 +1,0 @@
-query Posts($filter: PostFilterInput) {
-	posts(filter: $filter) {
-		id
-		title
-		content
-	}
-}
