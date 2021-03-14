@@ -1,33 +1,38 @@
 import { Box, SimpleGrid, SkeletonText } from '@chakra-ui/react';
 import { withUrqlClient } from 'next-urql';
-import { Container } from 'next/app';
 import { useRouter } from 'next/dist/client/router';
-import { useState } from 'react';
 import { Header } from '../../components/Header';
 import { Main } from '../../components/Main';
-import { usePostsQuery } from '../../graphql/generated/graphql';
+import { useCurrentUserQuery, useProjectQuery } from '../../graphql/generated/graphql';
 import { createUrqlClient } from '../../utils/uqrlUtils';
+import { Container } from '../../components/Container';
+import { Redirect } from '../../components/Redirect';
 
 const Project = () => {
-	const [variables] = useState({ limit: 5, offset: 0 });
-	const [{ data, fetching }] = usePostsQuery({ variables: { filter: variables } });
 	const router = useRouter();
-	const { pid } = router.query;
-	// const [{ data, fetching }] = usePostsQuery({ variables: {} });
+	const { id } = router.query;
+	if (!id || typeof id !== 'string') return Redirect('/');
 
-	console.log(variables);
-	console.log(data?.posts?.length);
+	const [{ data: userData }] = useCurrentUserQuery();
+	const [{ data, fetching }] = useProjectQuery({ variables: { id: parseInt(id) } });
+
+	if (data?.project?.collaborators?.some(u => u.id === userData?.currentUser?.id)) {
+		return Redirect('/');
+	}
+
+	const tasks = data?.project?.tasks;
+	console.log(tasks);
 
 	return (
 		<Container width="50">
 			<Main>
-				<Header title="Project ID" />
 				{fetching && (
 					<Box padding="6" boxShadow="lg">
 						<SkeletonText noOfLines={24} spacing={4} />
 					</Box>
 				)}
-				<SimpleGrid columns={2} spacingX="12" spacingY="12" mb="8"></SimpleGrid>
+				<Header title={`Project ${id}`} />
+				<SimpleGrid columns={4} spacingX="12" spacingY="12" mb="8"></SimpleGrid>
 			</Main>
 		</Container>
 	);
