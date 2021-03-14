@@ -11,10 +11,6 @@ import { createUrqlClient } from '../utils/uqrlUtils';
 const Projects = () => {
 	const [variables] = useState({ limit: 5, offset: 0 });
 	const [{ data, fetching }] = useProjectsQuery({ variables: { filter: variables } });
-	// const [{ data, fetching }] = usePostsQuery({ variables: {} });
-
-	console.log(variables);
-	console.log(data?.projects?.length);
 
 	return (
 		<Container width="50">
@@ -25,10 +21,18 @@ const Projects = () => {
 						<SkeletonText noOfLines={24} spacing={4} />
 					</Box>
 				)}
-				<SimpleGrid columns={2} spacingX="12" spacingY="12" mb="8">
-					<ProjectCard />
-					<ProjectCard />
-					<ProjectCard />
+				<SimpleGrid columns={3} spacingX="12" spacingY="12" mb="8">
+					{data?.projects?.map(p => {
+						return (
+							<ProjectCard
+								key={p.id}
+								id={parseInt(p.id)}
+								name={p.name}
+								description={p.description ?? ''}
+								owner={{ name: p.owner.name!, image: p.owner.image! }}
+							/>
+						);
+					})}
 				</SimpleGrid>
 			</Main>
 		</Container>
