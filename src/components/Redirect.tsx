@@ -1,11 +1,7 @@
-import { Text } from '@chakra-ui/layout';
 import redirect from 'nextjs-redirect';
+import { Routes } from '../utils/constants';
 
 export const Redirect = (url: string) => {
-	const Redirect = redirect(url);
-	return (
-		<Redirect>
-			<Text>Redirecting...</Text>
-		</Redirect>
-	);
+	const Redirect = redirect(Routes[url] ?? Routes.home);
+	return <Redirect />;
 };
