@@ -1,29 +1,34 @@
 import { Avatar, Box, Button, Heading, HStack, Stack, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
 import { Routes } from '../utils/constants';
+import Link from './NavigationLink';
 
-export const ProjectCard = () => {
+export const ProjectCard = ({
+	name,
+	description,
+	id,
+	owner,
+}: {
+	name: string;
+	description: string;
+	id: number;
+	owner: { name: string; image: string };
+}) => {
 	const router = useRouter();
 	return (
-		<Box maxW="445px" w="full" shadow="xl" rounded="lg" p={6} overflow="hidden">
+		<Box w="445px" minH="" shadow="xl" rounded="lg" p={6} overflow="hidden">
 			<Stack>
-				<HStack align="center" justifyContent="space-between">
-					<Heading fontSize="lg">Project Title</Heading>
-					<Text color={'messenger.600'} fontSize="md" fontWeight={500}>
-						Project ID
-					</Text>
-				</HStack>
-				<Text color={'gray.500'}>
-					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-					dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-				</Text>
+				<Heading fontSize="lg">{name}</Heading>
+				<Text color={'messenger.400'}>{description}</Text>
 			</Stack>
-			<HStack justifyContent="space-between">
-				<Stack mt={6} direction={'row'} spacing={4} align="center">
-					<Avatar src={'https://avatars0.githubusercontent.com/u/1164541?v=4'} alt={'Author'} />
-					<Text fontWeight={500}>Project Owner</Text>
-				</Stack>
-				<Button onClick={() => router.push(Routes.project('projectId'))}>Show</Button>
+			<HStack mt={6} justifyContent="space-between">
+				<HStack spacing={4}>
+					<Avatar src={owner.image} alt={'P P'} />
+					<Text fontWeight={500}>{owner.name}</Text>
+				</HStack>
+				<Button onClick={() => router.push(Routes.project(id))}>
+					<Link href={Routes.project(id)} text="Show" />
+				</Button>
 			</HStack>
 		</Box>
 	);
