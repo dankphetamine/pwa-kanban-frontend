@@ -1,4 +1,4 @@
-mutation CreateTask($projectId: Float!, $title: String!, $description: String!) {
+mutation CreateTask($projectId: Int!, $title: String!, $description: String!) {
 	createTask(projectId: $projectId, title: $title, description: $description) {
 		...BaseTask
 		project {

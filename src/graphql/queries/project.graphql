@@ -1,4 +1,4 @@
-query Project($id: Float!) {
+query Project($id: Int!) {
 	project(id: $id) {
 		...BaseProject
 		collaborators {
@@ -20,6 +20,7 @@ query Projects($filter: FilterInput) {
 			name
 		}
 		owner {
+			id
 			name
 			image
 		}
