@@ -31,12 +31,12 @@ export type Query = {
 
 
 export type QueryCommentArgs = {
-  id: Scalars['Float'];
+  id: Scalars['Int'];
 };
 
 
 export type QueryProjectArgs = {
-  id: Scalars['Float'];
+  id: Scalars['Int'];
 };
 
 
@@ -46,7 +46,7 @@ export type QueryProjectsArgs = {
 
 
 export type QueryTaskArgs = {
-  id: Scalars['Float'];
+  id: Scalars['Int'];
 };
 
 
@@ -130,6 +130,7 @@ export type Mutation = {
   createComment?: Maybe<Comment>;
   createProject?: Maybe<Project>;
   updateProjectText?: Maybe<Project>;
+  deleteProject?: Maybe<Project>;
   createTask?: Maybe<Task>;
   register: User;
   login: User;
@@ -139,7 +140,7 @@ export type Mutation = {
 
 
 export type MutationCreateCommentArgs = {
-  taskId: Scalars['Float'];
+  taskId: Scalars['Int'];
   text: Scalars['String'];
 };
 
@@ -152,14 +153,19 @@ export type MutationCreateProjectArgs = {
 
 export type MutationUpdateProjectTextArgs = {
   input?: Maybe<ProjectUpdateInput>;
-  id: Scalars['Float'];
+  id: Scalars['Int'];
+};
+
+
+export type MutationDeleteProjectArgs = {
+  id: Scalars['Int'];
 };
 
 
 export type MutationCreateTaskArgs = {
   description: Scalars['String'];
   title: Scalars['String'];
-  projectId: Scalars['Float'];
+  projectId: Scalars['Int'];
 };
 
 
@@ -254,8 +260,21 @@ export type CreateProjectMutation = (
   )> }
 );
 
+export type DeleteProjectMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteProjectMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteProject?: Maybe<(
+    { __typename?: 'Project' }
+    & BaseProjectFragment
+  )> }
+);
+
 export type CreateTaskMutationVariables = Exact<{
-  projectId: Scalars['Float'];
+  projectId: Scalars['Int'];
   title: Scalars['String'];
   description: Scalars['String'];
 }>;
@@ -291,7 +310,7 @@ export type UpdateUserNameMutation = (
 );
 
 export type ProjectQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id: Scalars['Int'];
 }>;
 
 
@@ -322,7 +341,10 @@ export type ProjectsQuery = (
     & { collaborators?: Maybe<Array<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'name'>
-    )>>, tasks?: Maybe<Array<(
+    )>>, owner: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name' | 'image'>
+    ), tasks?: Maybe<Array<(
       { __typename?: 'Task' }
       & Pick<Task, 'id' | 'title'>
     )>> }
@@ -450,8 +472,19 @@ export const CreateProjectDocument = gql`
 export function useCreateProjectMutation() {
   return Urql.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument);
 };
+export const DeleteProjectDocument = gql`
+    mutation DeleteProject($id: Int!) {
+  deleteProject(id: $id) {
+    ...BaseProject
+  }
+}
+    ${BaseProjectFragmentDoc}`;
+
+export function useDeleteProjectMutation() {
+  return Urql.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument);
+};
 export const CreateTaskDocument = gql`
-    mutation CreateTask($projectId: Float!, $title: String!, $description: String!) {
+    mutation CreateTask($projectId: Int!, $title: String!, $description: String!) {
   createTask(projectId: $projectId, title: $title, description: $description) {
     ...BaseTask
     project {
@@ -480,7 +513,7 @@ export function useUpdateUserNameMutation() {
   return Urql.useMutation<UpdateUserNameMutation, UpdateUserNameMutationVariables>(UpdateUserNameDocument);
 };
 export const ProjectDocument = gql`
-    query Project($id: Float!) {
+    query Project($id: Int!) {
   project(id: $id) {
     ...BaseProject
     collaborators {
@@ -505,6 +538,11 @@ export const ProjectsDocument = gql`
     collaborators {
       id
       name
+    }
+    owner {
+      id
+      name
+      image
     }
     tasks {
       id
