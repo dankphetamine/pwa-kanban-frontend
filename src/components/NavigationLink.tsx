@@ -4,7 +4,7 @@ import { capitalizeString } from '../utils/text';
 
 type AccessibleLinkProps = LinkProps & ChakraLinkProps;
 
-const Link = ({ href, isExternal, as, text }: AccessibleLinkProps & { text?: string }) => {
+export const Link = ({ href, isExternal, as, text }: AccessibleLinkProps & { text?: string }) => {
 	return (
 		<NextLink href={href} as={as} passHref>
 			<ChakraLink isExternal={isExternal}>
@@ -13,5 +13,3 @@ const Link = ({ href, isExternal, as, text }: AccessibleLinkProps & { text?: str
 		</NextLink>
 	);
 };
-
-export default Link;

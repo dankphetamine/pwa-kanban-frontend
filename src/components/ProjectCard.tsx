@@ -3,7 +3,7 @@ import { Avatar, Box, Button, Heading, HStack, IconButton, Text } from '@chakra-
 import { useRouter } from 'next/dist/client/router';
 import { useCurrentUserQuery, useDeleteProjectMutation } from '../graphql/generated/graphql';
 import { Routes } from '../utils/constants';
-import Link from './NavigationLink';
+import { Link } from './NavigationLink';
 
 export const ProjectCard = ({
 	name,

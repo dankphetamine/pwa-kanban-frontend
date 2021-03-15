@@ -5,7 +5,7 @@ import { useCurrentUserQuery, useLogOutMutation } from '../graphql/generated/gra
 import { Colors, Routes } from '../utils/constants';
 import { createUrqlClient } from '../utils/uqrlUtils';
 import { ColorModeSwitch } from './ColorModeSwitch';
-import Link from './NavigationLink';
+import { Link } from './NavigationLink';
 
 const NavBar = () => {
 	const { colorMode } = useColorMode();
