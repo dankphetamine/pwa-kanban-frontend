@@ -2,7 +2,12 @@ import { Cache, cacheExchange, QueryInput } from '@urql/exchange-graphcache';
 import { simplePagination } from '@urql/exchange-graphcache/extras';
 import { SSRExchange } from 'next-urql';
 import { dedupExchange, fetchExchange } from 'urql';
-import { CurrentUserDocument, CurrentUserQuery, LoginMutation } from '../graphql/generated/graphql';
+import {
+	CurrentUserDocument,
+	CurrentUserQuery,
+	DeleteProjectMutationVariables,
+	LoginMutation,
+} from '../graphql/generated/graphql';
 import { graphqlURL } from './constants';
 
 export function AuthCacheQuery<Result, Query>(
@@ -48,6 +53,10 @@ export const createUrqlClient = (ssr: SSRExchange) => ({
 								return { currentUser: null };
 							},
 						);
+					},
+
+					deleteProject: (_result, args, cache, _info) => {
+						cache.invalidate({ __typename: 'Project', id: (args as DeleteProjectMutationVariables).id });
 					},
 				},
 			},
