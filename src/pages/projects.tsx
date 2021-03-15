@@ -29,7 +29,7 @@ const Projects = () => {
 								id={parseInt(p.id)}
 								name={p.name}
 								description={p.description ?? ''}
-								owner={{ name: p.owner.name!, image: p.owner.image! }}
+								owner={{ id: p.owner.id!, name: p.owner.name!, image: p.owner.image! }}
 							/>
 						);
 					})}
