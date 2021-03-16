@@ -44,6 +44,7 @@ const NavBar = () => {
 						Sign in | Sign up
 					</Button>
 				)}
+
 				{!fetching && data?.currentUser && (
 					<>
 						<Button

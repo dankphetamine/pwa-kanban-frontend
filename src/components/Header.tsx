@@ -1,5 +1,5 @@
 import { Flex, Heading } from '@chakra-ui/react';
-import { capitalizeString } from '../utils/text';
+import { capitalizeString } from '../utils/constants';
 
 export const Header = ({ title }: { title: string }) => (
 	<Flex justifyContent="center" alignItems="center">
