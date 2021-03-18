@@ -5,14 +5,12 @@ import { Container } from '../components/Container';
 import { Header } from '../components/Header';
 import { Main } from '../components/Main';
 import { useProjectsQuery } from '../graphql/generated/graphql';
+import { Queries } from '../utils/constants';
 import { createUrqlClient } from '../utils/uqrlUtils';
 
 const Index = () => {
-	const [variables, setVariables] = useState({ limit: 5, offset: 0 });
+	const [variables, setVariables] = useState({ limit: Queries.limitMin, offset: 0 });
 	const [{ data, fetching }] = useProjectsQuery({ variables: { filter: variables } });
-
-	console.log(variables);
-	console.log(data?.projects?.length);
 
 	return (
 		<Container>
