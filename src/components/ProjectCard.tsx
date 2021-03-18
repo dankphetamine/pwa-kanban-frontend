@@ -1,7 +1,7 @@
 import { CloseIcon } from '@chakra-ui/icons';
 import { Avatar, Box, Button, Heading, HStack, IconButton, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
-import { useCurrentUserQuery, useDeleteProjectMutation } from '../graphql/generated/graphql';
+import { useCurrentUserQuery, useDeleteTaskMutation } from '../graphql/generated/graphql';
 import { Routes } from '../utils/constants';
 import { Link } from './NavigationLink';
 
@@ -17,9 +17,9 @@ export const ProjectCard = ({
 	owner: { id: number | string; name: string; image: string };
 }) => {
 	const router = useRouter();
-	const [{ data, fetching }] = useCurrentUserQuery();
+	const [{ data }] = useCurrentUserQuery();
 	const isOwner = data?.currentUser?.id === owner.id;
-	const [, deleteProject] = useDeleteProjectMutation();
+	const [, deleteTask] = useDeleteTaskMutation();
 
 	return (
 		<Box w="445px" shadow="xl" rounded="lg" p={6} overflow="hidden">
@@ -29,7 +29,7 @@ export const ProjectCard = ({
 					<IconButton
 						aria-label="Delete project"
 						icon={<CloseIcon w={4} h={4} color="red.500" />}
-						onClick={() => window.confirm('Are you sure you want to delete this project?') && deleteProject({ id })}
+						onClick={() => window.confirm('Are you sure you want to delete this project?') && deleteTask({ id })}
 					/>
 				)}
 			</HStack>
