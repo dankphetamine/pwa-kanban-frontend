@@ -1,0 +1,26 @@
+query Task($id: Int!) {
+	task(id: $id) {
+		...BaseTask
+		project {
+			id
+			name
+		}
+		reporter {
+			id
+			name
+			image
+		}
+		asignee {
+			id
+			name
+			image
+		}
+		comments {
+			id
+			text
+			task {
+				id
+			}
+		}
+	}
+}

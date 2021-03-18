@@ -10,3 +10,9 @@ mutation CreateTask($projectId: Int!, $title: String!, $description: String!) {
 		}
 	}
 }
+
+mutation DeleteTask($id: Int!) {
+	deleteTask(id: $id) {
+		...BaseTask
+	}
+}

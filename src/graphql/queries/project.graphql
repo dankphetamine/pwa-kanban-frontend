@@ -8,6 +8,16 @@ query Project($id: Int!) {
 		tasks {
 			id
 			title
+			description
+			status
+			reporter {
+				...BaseUser
+				image
+			}
+			asignee {
+				...BaseUser
+				image
+			}
 		}
 	}
 }
