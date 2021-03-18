@@ -4,7 +4,7 @@ import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
 import { Container } from '../components/Container';
 import { InputField } from '../components/InputField';
-import Link from '../components/NavigationLink';
+import { Link } from '../components/NavigationLink';
 import { useRegisterMutation } from '../graphql/generated/graphql';
 import { Routes } from '../utils/constants';
 import { createUrqlClient } from '../utils/uqrlUtils';
