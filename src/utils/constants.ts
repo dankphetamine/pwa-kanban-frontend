@@ -1,11 +1,12 @@
 export const Colors = {
 	bgColor: { light: 'messenger.300', dark: 'messenger.800' },
 	color: { light: 'black', dark: 'white' },
+	board: { light: 'gray.400', dark: 'gray.600' },
+	card: { light: 'gray.600', dark: 'gray.300' },
 };
 
 export const Routes = {
 	home: '/',
-	// login: '/login', Handled by Next-Auth
 	register: '/register',
 	login: '/login',
 	project: (id: number | string) => `/projects/${id}`,
