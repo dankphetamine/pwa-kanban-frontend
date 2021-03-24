@@ -1,7 +1,7 @@
 import { Box, SimpleGrid, SkeletonText } from '@chakra-ui/react';
 import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { Column } from '../../components/Column';
 import { Container } from '../../components/Container';
@@ -9,6 +9,7 @@ import { Header } from '../../components/Header';
 import { Main } from '../../components/Main';
 import { Redirect } from '../../components/Redirect';
 import { useCurrentUserQuery, useProjectQuery } from '../../graphql/generated/graphql';
+import { boardColumns } from '../../utils/constants';
 import { createUrqlClient } from '../../utils/uqrlUtils';
 
 const Project = () => {
@@ -19,61 +20,75 @@ const Project = () => {
 	const [{ data: userData }] = useCurrentUserQuery();
 	const [{ data, fetching }] = useProjectQuery({ variables: { id: parseInt(id) } });
 
-	if (!data?.project?.collaborators?.some(u => u.id === userData?.currentUser?.id)) Redirect('/');
+	if (!fetching && !data?.project?.collaborators?.some(u => u.id === userData?.currentUser?.id)) Redirect('/');
 
 	const initialColumns = {
-		todo: {
-			id: 'todo',
-			list: ['item 1', 'item 2', 'item 3'],
+		toDo: {
+			name: 'toDo',
+			tasks: ['item 1', 'item 2', 'item 3'],
 		},
-		doing: {
-			id: 'doing',
-			list: [],
+		inProgress: {
+			name: 'inProgress',
+			tasks: ['item 4', 'item 5'],
 		},
 		done: {
-			id: 'done',
-			list: [],
+			name: 'done',
+			tasks: ['item 6'],
 		},
 	};
+
+	console.log(
+		'match: ',
+		!fetching && data?.project?.tasks?.filter(t => t.status?.toLowerCase() === initialColumns.toDo.name.toLowerCase()),
+	);
+
+	const testColumns = boardColumns.map(col => {
+		return {
+			name: col,
+			tasks: data?.project?.tasks?.filter(t => t.status?.toLowerCase() === initialColumns.toDo.name.toLowerCase()),
+		};
+	});
+
+	console.log('duplicate', testColumns);
 
 	const [columns, setColumns] = useState(initialColumns);
 
 	const onDragEnd = ({ source, destination }: DropResult) => {
-		if (destination === undefined || destination === null) return null;
-		if (source.droppableId === destination.droppableId && destination.index === source.index) return null;
+		if (!destination || (source.droppableId === destination.droppableId && destination.index === source.index)) return;
 
-		const start = columns[source.droppableId];
-		const end = columns[destination.droppableId];
+		const start: { name: string; tasks: string[] } = columns[source.droppableId];
+		const end: { name: string; tasks: string[] } = columns[destination.droppableId];
 
 		if (start === end) {
-			const newList = start.list.filter((_, idx: number) => idx !== source.index);
+			const newList = start.tasks.filter((_, i) => i !== source.index);
 
-			newList.splice(destination.index, 0, start.list[source.index]);
+			newList.splice(destination.index, 0, start.tasks[source.index]);
 
-			const newCol = { id: start.id, list: newList };
-
-			setColumns(state => ({ ...state, [newCol.id]: newCol }));
-			return null;
-		} else {
-			const newStartList = start.list.filter((_, idx: number) => idx !== source.index);
-
-			const newStartCol = { id: start.id, list: newStartList };
-
-			const newEndList = end.list;
-
-			newEndList.splice(destination.index, 0, start.list[source.index]);
-
-			const newEndCol = {
-				id: end.id,
-				list: newEndList,
+			const newCol: { name: string; tasks: string[] } = {
+				name: start.name,
+				tasks: newList,
 			};
 
-			setColumns(state => ({
+			return setColumns(state => ({ ...state, [newCol.name]: newCol }));
+		} else {
+			const newStartList = start.tasks.filter((_, i) => i !== source.index);
+
+			const newStartCol: { name: string; tasks: string[] } = {
+				name: start.name,
+				tasks: newStartList,
+			};
+			end.tasks.splice(destination.index, 0, start.tasks[source.index]);
+
+			const newEndCol: { name: string; tasks: string[] } = {
+				name: end.name,
+				tasks: end.tasks,
+			};
+
+			return setColumns(state => ({
 				...state,
-				[newStartCol.id]: newStartCol,
-				[newEndCol.id]: newEndCol,
+				[newStartCol.name]: newStartCol,
+				[newEndCol.name]: newEndCol,
 			}));
-			return null;
 		}
 	};
 
@@ -89,21 +104,21 @@ const Project = () => {
 				<DragDropContext onDragEnd={onDragEnd}>
 					<SimpleGrid columns={3} spacingX="56" spacingY="16" mb="8">
 						{Object.values(columns).map((col, i) => (
-							<Column key={i} name={col.id} tasks={col.list} />
+							<Column key={i} name={col.name} tasks={col.tasks} />
 						))}
 					</SimpleGrid>
-					{/* <SimpleGrid columns={3} spacingX="12" spacingY="12" mb="8">
-						{columnArray.map(txt => {
-							return (
-								<ProjectColumn
-									key={txt}
-									text={capitalizeString(txt)}
-									tasks={data?.project?.tasks?.filter(t => t.status === txt) as Task[]}
-								></ProjectColumn>
-							);
-						})}
-					</SimpleGrid> */}
 				</DragDropContext>
+				{/* <SimpleGrid columns={3} spacingX="12" spacingY="12" mb="8">
+					{boardColumns.map(col => {
+						return (
+							<ProjectColumn
+								key={col}
+								text={capitalizeString(col)}
+								tasks={data?.project?.tasks?.filter(t => t.status === col) as Task[]}
+							></ProjectColumn>
+						);
+					})}
+				</SimpleGrid> */}
 			</Main>
 		</Container>
 	);
