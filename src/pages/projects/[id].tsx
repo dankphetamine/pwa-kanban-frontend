@@ -9,7 +9,6 @@ import { Header } from '../../components/Header';
 import { Main } from '../../components/Main';
 import { Redirect } from '../../components/Redirect';
 import { useCurrentUserQuery, useProjectQuery } from '../../graphql/generated/graphql';
-import { boardColumns } from '../../utils/constants';
 import { createUrqlClient } from '../../utils/uqrlUtils';
 
 const Project = () => {
@@ -17,39 +16,26 @@ const Project = () => {
 	const { id } = router.query;
 	if (!id || typeof id !== 'string') return Redirect('/');
 
-	const [{ data: userData }] = useCurrentUserQuery();
+	const [{ data: userData, fetching: userFetching }] = useCurrentUserQuery();
 	const [{ data, fetching }] = useProjectQuery({ variables: { id: parseInt(id) } });
 
-	if (!fetching && !data?.project?.collaborators?.some(u => u.id === userData?.currentUser?.id)) Redirect('/');
+	if (!userFetching && !fetching && !data?.project?.collaborators?.some(u => u.id === userData?.currentUser?.id))
+		Redirect('/');
 
 	const initialColumns = {
 		toDo: {
 			name: 'toDo',
-			tasks: ['item 1', 'item 2', 'item 3'],
+			tasks: ['Task 1', 'Task 2', 'Task 3'],
 		},
 		inProgress: {
 			name: 'inProgress',
-			tasks: ['item 4', 'item 5'],
+			tasks: ['Task 4', 'Task 5'],
 		},
 		done: {
 			name: 'done',
-			tasks: ['item 6'],
+			tasks: ['Task 6'],
 		},
 	};
-
-	console.log(
-		'match: ',
-		!fetching && data?.project?.tasks?.filter(t => t.status?.toLowerCase() === initialColumns.toDo.name.toLowerCase()),
-	);
-
-	const testColumns = boardColumns.map(col => {
-		return {
-			name: col,
-			tasks: data?.project?.tasks?.filter(t => t.status?.toLowerCase() === initialColumns.toDo.name.toLowerCase()),
-		};
-	});
-
-	console.log('duplicate', testColumns);
 
 	const [columns, setColumns] = useState(initialColumns);
 
