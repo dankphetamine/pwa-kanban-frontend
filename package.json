@@ -6,7 +6,7 @@
 		"dev": "next",
 		"build": "next build",
 		"start": "next start",
-		"graphql:gen": "graphql-codegen --config ./src/graphql/codegen.yml"
+		"gen": "graphql-codegen --config ./src/graphql/codegen.yml"
 	},
 	"dependencies": {
 		"@chakra-ui/icons": "^1.0.5",
