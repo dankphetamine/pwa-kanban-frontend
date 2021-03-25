@@ -1,7 +1,7 @@
 import { CloseIcon } from '@chakra-ui/icons';
 import { Avatar, Box, Button, Heading, HStack, IconButton, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
-import { useCurrentUserQuery, useDeleteTaskMutation } from '../graphql/generated/graphql';
+import { useCurrentUserQuery, useDeleteTaskMutation, User } from '../graphql/generated/graphql';
 import { Routes } from '../utils/constants';
 import { Link } from './NavigationLink';
 
@@ -14,7 +14,7 @@ export const ProjectCard = ({
 	name: string;
 	description: string;
 	id: number;
-	owner: { id: number | string; name: string; image: string };
+	owner: Pick<User, 'id' | 'name' | 'image'>;
 }) => {
 	const router = useRouter();
 	const [{ data }] = useCurrentUserQuery();
@@ -36,7 +36,7 @@ export const ProjectCard = ({
 			<Text color={'messenger.400'}>{description}</Text>
 			<HStack mt={6} justifyContent="space-between">
 				<HStack spacing={4}>
-					<Avatar src={owner.image} alt={'P P'} />
+					<Avatar src={owner.image!} alt={'P P'} />
 					<Text fontWeight={500}>{owner.name}</Text>
 				</HStack>
 				<Button onClick={() => router.push(Routes.project(id))}>
