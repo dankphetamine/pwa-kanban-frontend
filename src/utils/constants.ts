@@ -1,3 +1,4 @@
+import { Task } from './../graphql/generated/graphql';
 export const Colors = {
 	bgColor: { light: 'messenger.300', dark: 'messenger.800' },
 	color: { light: 'black', dark: 'white' },
@@ -28,6 +29,11 @@ export enum Queries {
 	limitMax = 25,
 }
 
+export enum DragNDropStatus {
+	Moved = 'moved',
+	Reordered = 'reordered',
+}
+
 export function capitalizeString(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
@@ -38,5 +44,26 @@ export function sentenceCase(str: string) {
 }
 
 // /(?:^|\s|[-"'([{])+\S/g
+export const initialColumns = {
+	toDo: {
+		name: 'toDo',
+		tasks: Array<Task>(),
+	},
+	inProgress: {
+		name: 'inProgress',
+		tasks: Array<Task>(),
+	},
+	done: {
+		name: 'done',
+		tasks: Array<Task>(),
+	},
+};
 
-export const columnArray = ['todo', 'in progress', 'done'];
+export type ColumnNames = 'toDo' | 'inProgress' | 'done';
+export type Action = { type: DragNDropStatus; payload?: any };
+export interface ColumnState {
+	[key: string]: {
+		name: string;
+		tasks: Task[];
+	};
+}
