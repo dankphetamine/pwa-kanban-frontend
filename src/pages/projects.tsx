@@ -41,7 +41,7 @@ const Projects = () => {
 						return (
 							<ProjectCard
 								key={p.id}
-								id={parseInt(p.id)}
+								id={p.id}
 								name={p.name}
 								description={p.description ?? ''}
 								owner={{ id: p.owner.id!, name: p.owner.name!, image: p.owner.image! }}
