@@ -21,7 +21,7 @@ export const InputField: FC<InputFieldProps> = ({ type, label, ...props }) => {
 				value={fieldProps.value}
 				placeholder={props.placeholder ? capitalizeString(fieldProps.name.replace(/([A-Z][a-z])/g, ' $1')) : ''}
 			/>
-			<FormErrorMessage>{error ?? null}</FormErrorMessage>
+			{error && <FormErrorMessage>{error}</FormErrorMessage>}
 		</FormControl>
 	);
 };
