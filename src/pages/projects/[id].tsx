@@ -1,7 +1,7 @@
 import { Box, SimpleGrid, SkeletonText } from '@chakra-ui/react';
 import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
-import React, { useReducer } from 'react';
+import { useReducer } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { Container } from '../../components/Container';
 import { Header } from '../../components/Header';
