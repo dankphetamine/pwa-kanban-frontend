@@ -55,9 +55,9 @@ const Projects = () => {
 						<Header title="No projects found" />
 					</Box>
 				)}
-				<SimpleGrid columns={3} spacingX="12" spacingY="12" mb="8">
-					{!fetching &&
-						data?.projects?.map(p => {
+				{!fetching && (
+					<SimpleGrid columns={3} spacingX="12" spacingY="12" mb="8">
+						{data?.projects?.map(p => {
 							return (
 								<ProjectCard
 									key={p.id}
@@ -68,7 +68,8 @@ const Projects = () => {
 								/>
 							);
 						})}
-				</SimpleGrid>
+					</SimpleGrid>
+				)}
 			</Main>
 		</Container>
 	);
