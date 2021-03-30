@@ -1,9 +1,12 @@
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import gql from 'graphql-tag';
 import * as Urql from 'urql';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } &
+	{ [P in K]-?: NonNullable<T[P]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -195,6 +198,285 @@ export type AuthInput = {
 	email: Scalars['String'];
 	password: Scalars['String'];
 };
+
+export type ResolverTypeWrapper<T> = Promise<T> | T;
+
+export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {
+	fragment: string;
+	resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
+};
+
+export type NewStitchingResolver<TResult, TParent, TContext, TArgs> = {
+	selectionSet: string;
+	resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
+};
+export type StitchingResolver<TResult, TParent, TContext, TArgs> =
+	| LegacyStitchingResolver<TResult, TParent, TContext, TArgs>
+	| NewStitchingResolver<TResult, TParent, TContext, TArgs>;
+export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
+	| ResolverFn<TResult, TParent, TContext, TArgs>
+	| StitchingResolver<TResult, TParent, TContext, TArgs>;
+
+export type ResolverFn<TResult, TParent, TContext, TArgs> = (
+	parent: TParent,
+	args: TArgs,
+	context: TContext,
+	info: GraphQLResolveInfo,
+) => Promise<TResult> | TResult;
+
+export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
+	parent: TParent,
+	args: TArgs,
+	context: TContext,
+	info: GraphQLResolveInfo,
+) => AsyncIterator<TResult> | Promise<AsyncIterator<TResult>>;
+
+export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
+	parent: TParent,
+	args: TArgs,
+	context: TContext,
+	info: GraphQLResolveInfo,
+) => TResult | Promise<TResult>;
+
+export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
+	subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
+	resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
+}
+
+export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
+	subscribe: SubscriptionSubscribeFn<any, TParent, TContext, TArgs>;
+	resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
+}
+
+export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
+	| SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
+	| SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
+
+export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
+	| ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
+	| SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
+
+export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
+	parent: TParent,
+	context: TContext,
+	info: GraphQLResolveInfo,
+) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
+
+export type IsTypeOfResolverFn<T = {}, TContext = {}> = (
+	obj: T,
+	context: TContext,
+	info: GraphQLResolveInfo,
+) => boolean | Promise<boolean>;
+
+export type NextResolverFn<T> = () => Promise<T>;
+
+export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
+	next: NextResolverFn<TResult>,
+	parent: TParent,
+	args: TArgs,
+	context: TContext,
+	info: GraphQLResolveInfo,
+) => TResult | Promise<TResult>;
+
+/** Mapping between all available schema types and the resolvers types */
+export type ResolversTypes = {
+	Query: ResolverTypeWrapper<{}>;
+	Int: ResolverTypeWrapper<Scalars['Int']>;
+	String: ResolverTypeWrapper<Scalars['String']>;
+	Comment: ResolverTypeWrapper<Comment>;
+	Task: ResolverTypeWrapper<Task>;
+	ID: ResolverTypeWrapper<Scalars['ID']>;
+	Project: ResolverTypeWrapper<Project>;
+	User: ResolverTypeWrapper<User>;
+	DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
+	FilterInput: FilterInput;
+	TaskFilterInput: TaskFilterInput;
+	Mutation: ResolverTypeWrapper<{}>;
+	Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+	ProjectUpdateInput: ProjectUpdateInput;
+	TaskUpdateInput: TaskUpdateInput;
+	Float: ResolverTypeWrapper<Scalars['Float']>;
+	AuthInput: AuthInput;
+};
+
+/** Mapping between all available schema types and the resolvers parents */
+export type ResolversParentTypes = {
+	Query: {};
+	Int: Scalars['Int'];
+	String: Scalars['String'];
+	Comment: Comment;
+	Task: Task;
+	ID: Scalars['ID'];
+	Project: Project;
+	User: User;
+	DateTime: Scalars['DateTime'];
+	FilterInput: FilterInput;
+	TaskFilterInput: TaskFilterInput;
+	Mutation: {};
+	Boolean: Scalars['Boolean'];
+	ProjectUpdateInput: ProjectUpdateInput;
+	TaskUpdateInput: TaskUpdateInput;
+	Float: Scalars['Float'];
+	AuthInput: AuthInput;
+};
+
+export type QueryResolvers<
+	ContextType = any,
+	ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
+> = {
+	comment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryCommentArgs, 'id'>>;
+	comments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>;
+	project?: Resolver<Maybe<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<QueryProjectArgs, 'id'>>;
+	projects?: Resolver<
+		Maybe<Array<ResolversTypes['Project']>>,
+		ParentType,
+		ContextType,
+		RequireFields<QueryProjectsArgs, never>
+	>;
+	task?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<QueryTaskArgs, 'id'>>;
+	tasks?: Resolver<Maybe<Array<ResolversTypes['Task']>>, ParentType, ContextType, RequireFields<QueryTasksArgs, never>>;
+	user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'email'>>;
+	users?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
+	currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+};
+
+export type CommentResolvers<
+	ContextType = any,
+	ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']
+> = {
+	id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+	task?: Resolver<ResolversTypes['Task'], ParentType, ContextType>;
+	author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+	text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+	createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+	updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TaskResolvers<
+	ContextType = any,
+	ParentType extends ResolversParentTypes['Task'] = ResolversParentTypes['Task']
+> = {
+	id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+	project?: Resolver<ResolversTypes['Project'], ParentType, ContextType>;
+	reporter?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+	asignee?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+	title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+	description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+	status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+	comments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>;
+	createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+	updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProjectResolvers<
+	ContextType = any,
+	ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']
+> = {
+	id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+	name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+	description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+	owner?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+	collaborators?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
+	tasks?: Resolver<Maybe<Array<ResolversTypes['Task']>>, ParentType, ContextType>;
+	createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+	updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserResolvers<
+	ContextType = any,
+	ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
+> = {
+	id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+	email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+	name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+	image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+	tasks?: Resolver<Maybe<Array<ResolversTypes['Task']>>, ParentType, ContextType>;
+	comments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>;
+	projects?: Resolver<Maybe<Array<ResolversTypes['Project']>>, ParentType, ContextType>;
+	createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+	updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+	name: 'DateTime';
+}
+
+export type MutationResolvers<
+	ContextType = any,
+	ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
+> = {
+	createComment?: Resolver<
+		Maybe<ResolversTypes['Comment']>,
+		ParentType,
+		ContextType,
+		RequireFields<MutationCreateCommentArgs, 'taskId' | 'text'>
+	>;
+	createProject?: Resolver<
+		Maybe<ResolversTypes['Project']>,
+		ParentType,
+		ContextType,
+		RequireFields<MutationCreateProjectArgs, 'description' | 'name'>
+	>;
+	updateProjectText?: Resolver<
+		Maybe<ResolversTypes['Project']>,
+		ParentType,
+		ContextType,
+		RequireFields<MutationUpdateProjectTextArgs, 'id'>
+	>;
+	deleteProject?: Resolver<
+		Maybe<ResolversTypes['Project']>,
+		ParentType,
+		ContextType,
+		RequireFields<MutationDeleteProjectArgs, 'id'>
+	>;
+	createTask?: Resolver<
+		Maybe<ResolversTypes['Task']>,
+		ParentType,
+		ContextType,
+		RequireFields<MutationCreateTaskArgs, 'description' | 'title' | 'projectId'>
+	>;
+	updateTask?: Resolver<
+		Maybe<ResolversTypes['Task']>,
+		ParentType,
+		ContextType,
+		RequireFields<MutationUpdateTaskArgs, 'id'>
+	>;
+	deleteTask?: Resolver<
+		Maybe<Array<ResolversTypes['Task']>>,
+		ParentType,
+		ContextType,
+		RequireFields<MutationDeleteTaskArgs, 'id'>
+	>;
+	register?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'input'>>;
+	login?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
+	updateUserName?: Resolver<
+		Maybe<ResolversTypes['User']>,
+		ParentType,
+		ContextType,
+		RequireFields<MutationUpdateUserNameArgs, 'name' | 'email'>
+	>;
+	logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+};
+
+export type Resolvers<ContextType = any> = {
+	Query?: QueryResolvers<ContextType>;
+	Comment?: CommentResolvers<ContextType>;
+	Task?: TaskResolvers<ContextType>;
+	Project?: ProjectResolvers<ContextType>;
+	User?: UserResolvers<ContextType>;
+	DateTime?: GraphQLScalarType;
+	Mutation?: MutationResolvers<ContextType>;
+};
+
+/**
+ * @deprecated
+ * Use "Resolvers" root object instead. If you wish to get "IResolvers", add "typesPrefix: I" to your config.
+ */
+export type IResolvers<ContextType = any> = Resolvers<ContextType>;
 
 export type BaseProjectFragment = { __typename?: 'Project' } & Pick<
 	Project,
