@@ -1,5 +1,5 @@
 import { AddIcon } from '@chakra-ui/icons';
-import { Box, Flex, IconButton, SimpleGrid, SkeletonText, Spacer } from '@chakra-ui/react';
+import { Box, Flex, IconButton, SimpleGrid, SkeletonCircle, SkeletonText, Spacer } from '@chakra-ui/react';
 import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
 import { useState } from 'react';
@@ -17,11 +17,13 @@ const Projects = () => {
 	const router = useRouter();
 
 	return (
-		<Container width="50">
+		<Container>
 			<Main>
-				<Flex>
+				<Flex minW="container.xl">
 					<Header title="projects" />
+
 					<Spacer />
+
 					<IconButton
 						aria-label="Search database"
 						icon={<AddIcon />}
@@ -31,23 +33,41 @@ const Projects = () => {
 						onClick={() => router.push(Routes.project_add)}
 					/>
 				</Flex>
+
 				{fetching && (
-					<Box padding="6" boxShadow="lg">
-						<SkeletonText noOfLines={24} spacing={4} />
+					<SimpleGrid columns={3} spacingX="12" spacingY="12" mb="8">
+						<Box padding="6" boxShadow="lg">
+							<SkeletonCircle size="10" />
+							<SkeletonText mt="4" noOfLines={4} />
+						</Box>
+						<Box padding="6" boxShadow="lg">
+							<SkeletonCircle size="10" />
+							<SkeletonText mt="4" noOfLines={4} />
+						</Box>
+						<Box padding="6" boxShadow="lg">
+							<SkeletonCircle size="10" />
+							<SkeletonText mt="4" noOfLines={4} />
+						</Box>
+					</SimpleGrid>
+				)}
+				{!fetching && !data && (
+					<Box my={12}>
+						<Header title="No projects found" />
 					</Box>
 				)}
 				<SimpleGrid columns={3} spacingX="12" spacingY="12" mb="8">
-					{data?.projects?.map(p => {
-						return (
-							<ProjectCard
-								key={p.id}
-								id={p.id}
-								name={p.name}
-								description={p.description ?? ''}
-								owner={{ id: p.owner.id!, name: p.owner.name!, image: p.owner.image! }}
-							/>
-						);
-					})}
+					{!fetching &&
+						data?.projects?.map(p => {
+							return (
+								<ProjectCard
+									key={p.id}
+									id={p.id}
+									name={p.name}
+									description={p.description ?? ''}
+									owner={{ id: p.owner.id!, name: p.owner.name!, image: p.owner.image! }}
+								/>
+							);
+						})}
 				</SimpleGrid>
 			</Main>
 		</Container>
