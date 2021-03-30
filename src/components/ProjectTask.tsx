@@ -15,12 +15,12 @@ export const ProjectTask = ({ task, index }: { task: Task; index: number }) => {
 		<Draggable draggableId={task.id} index={index}>
 			{provided => (
 				<Box
-					w="429px"
+					w="418px"
 					shadow="md"
 					rounded="lg"
 					p={4}
-					m="8px"
-					overflow="hidden"
+					my={2}
+					bgColor="gray.600"
 					ref={provided.innerRef}
 					{...provided.draggableProps}
 					{...provided.dragHandleProps}
