@@ -43,7 +43,7 @@ const Project = () => {
 
 	const [columnState, dispatch] = useReducer(reducer, populateColumns(initialColumns));
 
-	if (!data?.project?.collaborators?.some(u => u.id === userData?.currentUser?.id)) return !fetching && Redirect();
+	if (!fetching && !data?.project?.collaborators?.some(u => u.id === userData?.currentUser?.id)) return Redirect();
 
 	const onDragEnd = ({ source, destination }: DropResult) => {
 		if (!destination || (source.droppableId === destination.droppableId && destination.index === source.index)) return;
