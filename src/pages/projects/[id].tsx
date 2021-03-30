@@ -16,30 +16,35 @@ const Project = () => {
 	const router = useRouter();
 	const { id } = router.query;
 	if (!id || typeof id !== 'string') return Redirect('/');
-
-	const [{ data: userData, fetching: userFetching }] = useCurrentUserQuery();
+	const [{ data: userData }] = useCurrentUserQuery();
 	const [{ data, fetching }] = useProjectQuery({ variables: { id: parseInt(id) } });
 
-	if (!userFetching && !fetching && !data?.project?.collaborators?.some(u => u.id === userData?.currentUser?.id))
-		return Redirect('/');
-
-	Object.values(initialColumns).forEach(col => {
-		const filteredTasks = data?.project?.tasks?.filter(t => t.status?.toLowerCase() === col.name.toLowerCase());
-		if (!filteredTasks) return;
-
-		filteredTasks.forEach(t => {
-			col.tasks.push(t as Task);
-		});
-	});
+	if (data?.project?.collaborators?.some(u => u.id !== userData?.currentUser?.id)) return Redirect('/');
 
 	/** Reducer function */
-	function reducer(columnState: ColumnState, action: Action): ColumnState {
+	const reducer = (columnState: ColumnState, action: Action): ColumnState => {
 		if (action.type === DragNDropStatus.Reordered) return { ...columnState, ...action.payload };
-		if (action.type === DragNDropStatus.Moved) return { ...columnState, ...action.payload };
+		if (action.type === DragNDropStatus.Moved) {
+			// run UPDATE mutation
+			console.log('payload', action.payload);
+
+			return { ...columnState, ...action.payload };
+		}
+
 		return columnState;
+	};
+
+	function populateColumns(columns: ColumnState) {
+		Object.values(columns).forEach(col => {
+			const filteredTasks = data?.project?.tasks?.filter(t => t.status?.toLowerCase() === col.name.toLowerCase());
+			filteredTasks?.forEach(t => {
+				if (!col.tasks.some(t2 => t2.id === t.id)) col.tasks.push(t as Task);
+			});
+		});
+		return columns;
 	}
 
-	const [columnState, dispatch] = useReducer(reducer, initialColumns);
+	const [columnState, dispatch] = useReducer(reducer, populateColumns(initialColumns));
 
 	const onDragEnd = ({ source, destination }: DropResult) => {
 		if (!destination || (source.droppableId === destination.droppableId && destination.index === source.index)) return;
@@ -90,7 +95,7 @@ const Project = () => {
 						<SkeletonText noOfLines={24} spacing={4} />
 					</Box>
 				)}
-				{!fetching && (
+				{
 					<>
 						<Header title={`Project ${id}`} />
 						<DragDropContext onDragEnd={onDragEnd}>
@@ -101,7 +106,7 @@ const Project = () => {
 							</SimpleGrid>
 						</DragDropContext>
 					</>
-				)}
+				}
 			</Main>
 		</Container>
 	);
