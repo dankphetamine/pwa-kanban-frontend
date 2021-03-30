@@ -5,8 +5,12 @@ generates:
   src/graphql/generated/graphql.ts:
     plugins:
       - 'typescript'
+      - 'typescript-resolvers'
       - 'typescript-operations'
       - 'typescript-urql'
   src/graphql.schema.json:
     plugins:
       - 'introspection'
+hooks:
+  afterAllFileWrite:
+    - prettier --write
