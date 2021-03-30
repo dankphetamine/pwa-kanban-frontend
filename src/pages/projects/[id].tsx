@@ -15,18 +15,15 @@ import { createUrqlClient } from '../../utils/uqrlUtils';
 const Project = () => {
 	const router = useRouter();
 	const { id } = router.query;
-	if (!id || typeof id !== 'string') return Redirect('/');
+	if (!id || typeof id !== 'string') return Redirect();
 	const [{ data: userData }] = useCurrentUserQuery();
 	const [{ data, fetching }] = useProjectQuery({ variables: { id: parseInt(id) } });
-
-	if (data?.project?.collaborators?.some(u => u.id !== userData?.currentUser?.id)) return Redirect('/');
 
 	/** Reducer function */
 	const reducer = (columnState: ColumnState, action: Action): ColumnState => {
 		if (action.type === DragNDropStatus.Reordered) return { ...columnState, ...action.payload };
 		if (action.type === DragNDropStatus.Moved) {
 			// run UPDATE mutation
-			console.log('payload', action.payload);
 
 			return { ...columnState, ...action.payload };
 		}
@@ -45,6 +42,8 @@ const Project = () => {
 	}
 
 	const [columnState, dispatch] = useReducer(reducer, populateColumns(initialColumns));
+
+	if (!data?.project?.collaborators?.some(u => u.id === userData?.currentUser?.id)) return !fetching && Redirect();
 
 	const onDragEnd = ({ source, destination }: DropResult) => {
 		if (!destination || (source.droppableId === destination.droppableId && destination.index === source.index)) return;
