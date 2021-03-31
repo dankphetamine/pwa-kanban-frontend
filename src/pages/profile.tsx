@@ -15,7 +15,7 @@ const Projects = () => {
 	console.log(data?.projects?.length);
 
 	return (
-		<Container width="50">
+		<Container>
 			<Main>
 				<Header title="profile" />
 			</Main>

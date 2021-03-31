@@ -87,7 +87,7 @@ const Project = () => {
 	};
 
 	return (
-		<Container width="50">
+		<Container>
 			<Main>
 				{fetching && (
 					<Box padding="6" boxShadow="lg">
