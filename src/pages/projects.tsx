@@ -7,7 +7,7 @@ import { Container } from '../components/Container';
 import { Header } from '../components/Header';
 import { Main } from '../components/Main';
 import { ProjectCard } from '../components/ProjectCard';
-import { useProjectsQuery } from '../graphql/generated/graphql';
+import { useCurrentUserQuery, useProjectsQuery } from '../graphql/generated/graphql';
 import { Routes } from '../utils/constants';
 import { createUrqlClient } from '../utils/uqrlUtils';
 
@@ -15,6 +15,7 @@ const Projects = () => {
 	const [variables] = useState({ limit: 5, offset: 0 });
 	const [{ data, fetching }] = useProjectsQuery({ variables: { filter: variables } });
 	const router = useRouter();
+	const [{ data: userData, fetching: userFetching }] = useCurrentUserQuery();
 
 	return (
 		<Container>
@@ -25,11 +26,12 @@ const Projects = () => {
 					<Spacer />
 
 					<IconButton
-						aria-label="Search database"
+						aria-label="Add new project"
 						icon={<AddIcon />}
 						size="lg"
 						variant="solid"
 						colorScheme="green"
+						disabled={!userFetching && !userData?.currentUser}
 						onClick={() => router.push(Routes.project_add)}
 					/>
 				</Flex>
