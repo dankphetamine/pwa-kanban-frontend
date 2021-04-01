@@ -44,7 +44,7 @@ export function sentenceCase(str: string) {
 }
 
 // /(?:^|\s|[-"'([{])+\S/g
-export const initialColumns = {
+export const initialColumns: ColumnState = {
 	toDo: {
 		name: 'toDo',
 		tasks: Array<Task>(),
@@ -60,10 +60,16 @@ export const initialColumns = {
 };
 
 export type ColumnNames = 'toDo' | 'inProgress' | 'done';
-export type Action = { type: DragNDropStatus; payload?: any };
+
+export interface Action {
+	type: DragNDropStatus;
+	payload?: any;
+}
+
+export interface Column {
+	name: string;
+	tasks: Task[];
+}
 export interface ColumnState {
-	[key: string]: {
-		name: string;
-		tasks: Task[];
-	};
+	[key: string]: Column;
 }
