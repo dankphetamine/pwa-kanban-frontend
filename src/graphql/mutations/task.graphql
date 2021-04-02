@@ -11,7 +11,7 @@ mutation CreateTask($projectId: Int!, $title: String!, $description: String!) {
 	}
 }
 
-mutation UpdateTask($id: Int!, $input: TaskUpdateInput) {
+mutation UpdateTask($id: Int!, $input: TaskUpdateInput!) {
 	updateTask(id: $id, input: $input) {
 		title
 		description

@@ -41,7 +41,7 @@ export type QueryProjectArgs = {
 };
 
 export type QueryProjectsArgs = {
-	filter?: Maybe<FilterInput>;
+	filter?: Maybe<ProjectFilterInput>;
 };
 
 export type QueryTaskArgs = {
@@ -109,15 +109,21 @@ export type User = {
 	updatedAt: Scalars['DateTime'];
 };
 
-export type FilterInput = {
+export type ProjectFilterInput = {
 	limit?: Maybe<Scalars['Int']>;
 	offset?: Maybe<Scalars['Int']>;
+	userId?: Maybe<Scalars['Int']>;
 };
 
 export type TaskFilterInput = {
 	limit?: Maybe<Scalars['Int']>;
 	offset?: Maybe<Scalars['Int']>;
 	projectId?: Maybe<Scalars['Int']>;
+};
+
+export type FilterInput = {
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
 };
 
 export type Mutation = {
@@ -128,7 +134,7 @@ export type Mutation = {
 	deleteProject?: Maybe<Project>;
 	createTask?: Maybe<Task>;
 	updateTask?: Maybe<Task>;
-	deleteTask?: Maybe<Array<Task>>;
+	deleteTask?: Maybe<Task>;
 	register: User;
 	login: User;
 	updateUserName?: Maybe<User>;
@@ -161,7 +167,7 @@ export type MutationCreateTaskArgs = {
 };
 
 export type MutationUpdateTaskArgs = {
-	input?: Maybe<TaskUpdateInput>;
+	input: TaskUpdateInput;
 	id: Scalars['Int'];
 };
 
@@ -289,8 +295,9 @@ export type ResolversTypes = {
 	Project: ResolverTypeWrapper<Project>;
 	User: ResolverTypeWrapper<User>;
 	DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
-	FilterInput: FilterInput;
+	ProjectFilterInput: ProjectFilterInput;
 	TaskFilterInput: TaskFilterInput;
+	FilterInput: FilterInput;
 	Mutation: ResolverTypeWrapper<{}>;
 	Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 	ProjectUpdateInput: ProjectUpdateInput;
@@ -310,8 +317,9 @@ export type ResolversParentTypes = {
 	Project: Project;
 	User: User;
 	DateTime: Scalars['DateTime'];
-	FilterInput: FilterInput;
+	ProjectFilterInput: ProjectFilterInput;
 	TaskFilterInput: TaskFilterInput;
+	FilterInput: FilterInput;
 	Mutation: {};
 	Boolean: Scalars['Boolean'];
 	ProjectUpdateInput: ProjectUpdateInput;
@@ -443,10 +451,10 @@ export type MutationResolvers<
 		Maybe<ResolversTypes['Task']>,
 		ParentType,
 		ContextType,
-		RequireFields<MutationUpdateTaskArgs, 'id'>
+		RequireFields<MutationUpdateTaskArgs, 'input' | 'id'>
 	>;
 	deleteTask?: Resolver<
-		Maybe<Array<ResolversTypes['Task']>>,
+		Maybe<ResolversTypes['Task']>,
 		ParentType,
 		ContextType,
 		RequireFields<MutationDeleteTaskArgs, 'id'>
@@ -547,7 +555,7 @@ export type CreateTaskMutation = { __typename?: 'Mutation' } & {
 
 export type UpdateTaskMutationVariables = Exact<{
 	id: Scalars['Int'];
-	input?: Maybe<TaskUpdateInput>;
+	input: TaskUpdateInput;
 }>;
 
 export type UpdateTaskMutation = { __typename?: 'Mutation' } & {
@@ -559,7 +567,7 @@ export type DeleteTaskMutationVariables = Exact<{
 }>;
 
 export type DeleteTaskMutation = { __typename?: 'Mutation' } & {
-	deleteTask?: Maybe<Array<{ __typename?: 'Task' } & BaseTaskFragment>>;
+	deleteTask?: Maybe<{ __typename?: 'Task' } & BaseTaskFragment>;
 };
 
 export type UpdateUserNameMutationVariables = Exact<{
@@ -592,7 +600,7 @@ export type ProjectQuery = { __typename?: 'Query' } & {
 };
 
 export type ProjectsQueryVariables = Exact<{
-	filter?: Maybe<FilterInput>;
+	filter?: Maybe<ProjectFilterInput>;
 }>;
 
 export type ProjectsQuery = { __typename?: 'Query' } & {
@@ -769,7 +777,7 @@ export function useCreateTaskMutation() {
 	return Urql.useMutation<CreateTaskMutation, CreateTaskMutationVariables>(CreateTaskDocument);
 }
 export const UpdateTaskDocument = gql`
-	mutation UpdateTask($id: Int!, $input: TaskUpdateInput) {
+	mutation UpdateTask($id: Int!, $input: TaskUpdateInput!) {
 		updateTask(id: $id, input: $input) {
 			title
 			description
@@ -837,7 +845,7 @@ export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVari
 	return Urql.useQuery<ProjectQuery>({ query: ProjectDocument, ...options });
 }
 export const ProjectsDocument = gql`
-	query Projects($filter: FilterInput) {
+	query Projects($filter: ProjectFilterInput) {
 		projects(filter: $filter) {
 			...BaseProject
 			collaborators {
