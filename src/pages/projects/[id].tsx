@@ -9,7 +9,7 @@ import { Main } from '../../components/Main';
 import { ProjectColumn } from '../../components/ProjectColumn';
 import { Redirect } from '../../components/Redirect';
 import { Task, useCurrentUserQuery, useProjectQuery } from '../../graphql/generated/graphql';
-import { Action, ColumnState, DragNDropStatus, initialColumns } from '../../utils/constants';
+import { Action, Column, ColumnState, DragNDropStatus, initialColumns } from '../../utils/constants';
 import { createUrqlClient } from '../../utils/uqrlUtils';
 
 const Project = () => {
@@ -48,36 +48,28 @@ const Project = () => {
 	const onDragEnd = ({ source, destination }: DropResult) => {
 		if (!destination || (source.droppableId === destination.droppableId && destination.index === source.index)) return;
 
-		const start: { name: string; tasks: Task[] } = columnState[source.droppableId];
-		const end: { name: string; tasks: Task[] } = columnState[destination.droppableId];
+		const startCol = columnState[source.droppableId];
+		const endCol = columnState[destination.droppableId];
 
-		if (start === end) {
-			const newList = start.tasks.filter((_, i) => i !== source.index);
+		if (startCol === endCol) {
+			const newList = startCol.tasks.filter((_, i) => i !== source.index);
 
-			newList.splice(destination.index, 0, start.tasks[source.index]);
+			newList.splice(destination.index, 0, startCol.tasks[source.index]);
 
-			const newCol: { name: string; tasks: Task[] } = {
-				name: start.name,
-				tasks: newList,
-			};
+			const newCol: Column = { name: startCol.name, tasks: newList };
 
 			return dispatch({
 				type: DragNDropStatus.Reordered,
 				payload: { [newCol.name]: newCol },
 			});
 		} else {
-			const newStartList = start.tasks.filter((_, i) => i !== source.index);
+			const newStartList = startCol.tasks.filter((_, i) => i !== source.index);
 
-			const newStartCol: { name: string; tasks: Task[] } = {
-				name: start.name,
-				tasks: newStartList,
-			};
-			end.tasks.splice(destination.index, 0, start.tasks[source.index]);
+			const newStartCol: Column = { name: startCol.name, tasks: newStartList };
 
-			const newEndCol: { name: string; tasks: Task[] } = {
-				name: end.name,
-				tasks: end.tasks,
-			};
+			endCol.tasks.splice(destination.index, 0, startCol.tasks[source.index]);
+
+			const newEndCol: Column = { name: endCol.name, tasks: endCol.tasks };
 
 			return dispatch({
 				type: DragNDropStatus.Moved,
@@ -94,7 +86,7 @@ const Project = () => {
 						<SkeletonText noOfLines={24} spacing={4} />
 					</Box>
 				)}
-				{
+				{data?.project && (
 					<>
 						<Header title={`Project ${id}`} />
 						<DragDropContext onDragEnd={onDragEnd}>
@@ -105,7 +97,7 @@ const Project = () => {
 							</SimpleGrid>
 						</DragDropContext>
 					</>
-				}
+				)}
 			</Main>
 		</Container>
 	);
