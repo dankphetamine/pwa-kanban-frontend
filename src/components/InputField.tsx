@@ -2,7 +2,7 @@ import { FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/reac
 import { useField } from 'formik';
 import PropTypes from 'prop-types';
 import { FC } from 'react';
-import { capitalizeString } from '../utils/constants';
+import { sentenceCaseString } from '../utils/constants';
 import { InputFieldProps } from '../utils/props';
 
 export const InputField: FC<InputFieldProps> = ({ type, label, ...props }) => {
@@ -11,7 +11,7 @@ export const InputField: FC<InputFieldProps> = ({ type, label, ...props }) => {
 	return (
 		<FormControl isInvalid={!!error} /* casting to boolean */>
 			<FormLabel htmlFor={fieldProps.name}>
-				{label ? capitalizeString(fieldProps.name.replace(/([A-Z][a-z])/g, ' $1')) : ''}
+				{label ? sentenceCaseString(fieldProps.name.replace(/([A-Z][a-z])/g, ' $1')) : ''}
 			</FormLabel>
 			<Input
 				{...fieldProps}
@@ -19,7 +19,7 @@ export const InputField: FC<InputFieldProps> = ({ type, label, ...props }) => {
 				id={fieldProps.name}
 				type={type}
 				value={fieldProps.value}
-				placeholder={props.placeholder ? capitalizeString(fieldProps.name.replace(/([A-Z][a-z])/g, ' $1')) : ''}
+				placeholder={props.placeholder ? sentenceCaseString(fieldProps.name.replace(/([A-Z][a-z])/g, ' $1')) : ''}
 			/>
 			{error && <FormErrorMessage>{error}</FormErrorMessage>}
 		</FormControl>

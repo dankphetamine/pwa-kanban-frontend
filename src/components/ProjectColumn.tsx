@@ -1,6 +1,7 @@
 import { Box, Heading, VStack } from '@chakra-ui/react';
 import { Droppable } from 'react-beautiful-dnd';
 import { Task } from '../graphql/generated/graphql';
+import { splitCamelCase } from '../utils/constants';
 import { ProjectTask } from './ProjectTask';
 
 export const ProjectColumn = ({ text, tasks }: { text: string; tasks: Task[] }) => (
@@ -8,7 +9,7 @@ export const ProjectColumn = ({ text, tasks }: { text: string; tasks: Task[] }) 
 		{provided => (
 			<Box w="450px" h="3xl" shadow="dark-lg" rounded="xl" overflow="hidden">
 				<Heading textAlign="center" p={2}>
-					{text}
+					{splitCamelCase(text).replace(text.charAt(0), text.charAt(0).toUpperCase())}
 				</Heading>
 				<Box px={4} py={8} {...provided.droppableProps} ref={provided.innerRef}>
 					<VStack spacing={2}>

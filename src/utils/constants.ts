@@ -34,14 +34,13 @@ export enum DragNDropStatus {
 	Reordered = 'reordered',
 }
 
-export function capitalizeString(str: string) {
+export const sentenceCaseString = (str: string) => {
 	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-}
+};
 
-export function sentenceCase(str: string) {
-	if (!str) return undefined;
-	return str.replace(/([!?.:]\s+)([a-z])/g, match => match.toUpperCase());
-}
+export const splitCamelCase = (str: string) => {
+	return str.replace(/([a-z])([A-Z])/g, '$1 $2');
+};
 
 // /(?:^|\s|[-"'([{])+\S/g
 export const initialColumns: ColumnState = {

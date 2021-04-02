@@ -1,6 +1,6 @@
 import { Link as ChakraLink, LinkProps as ChakraLinkProps } from '@chakra-ui/react';
 import NextLink, { LinkProps } from 'next/link';
-import { capitalizeString } from '../utils/constants';
+import { sentenceCaseString } from '../utils/constants';
 
 type AccessibleLinkProps = LinkProps & ChakraLinkProps;
 
@@ -8,7 +8,7 @@ export const Link = ({ href, isExternal, as, text }: AccessibleLinkProps & { tex
 	return (
 		<NextLink href={href} as={as} passHref>
 			<ChakraLink isExternal={isExternal}>
-				{text ? capitalizeString(text) : capitalizeString(href.split('/').pop()!) ?? capitalizeString(href)}
+				{text ? sentenceCaseString(text) : sentenceCaseString(href.split('/').pop()!) ?? sentenceCaseString(href)}
 			</ChakraLink>
 		</NextLink>
 	);

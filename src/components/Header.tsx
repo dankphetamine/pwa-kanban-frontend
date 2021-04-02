@@ -1,9 +1,9 @@
 import { Flex, Heading } from '@chakra-ui/react';
-import { capitalizeString } from '../utils/constants';
+import { sentenceCaseString } from '../utils/constants';
 
 export const Header = ({ title }: { title: string }) => (
 	<Flex justifyContent="center" alignItems="center">
-		<Heading fontSize="32pt">{capitalizeString(title)}</Heading>
+		<Heading fontSize="32pt">{sentenceCaseString(title)}</Heading>
 	</Flex>
 );
 
