@@ -8,7 +8,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<React.StrictMode>
 			<ChakraProvider resetCSS theme={theme}>
-				<NavBar pageProps={null} />
+				<NavBar {...pageProps} />
 				<Component {...pageProps} />
 			</ChakraProvider>
 		</React.StrictMode>
