@@ -1,9 +1,8 @@
 import { CloseIcon } from '@chakra-ui/icons';
 import { Avatar, Box, Button, Heading, HStack, IconButton, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
-import { useCurrentUserQuery, useDeleteProjectMutation, User } from '../graphql/generated/graphql';
+import { useCurrentUserQuery, useDeleteTaskMutation, User } from '../graphql/generated/graphql';
 import { Routes } from '../utils/constants';
-import { Link } from './NavigationLink';
 
 export const ProjectCard = ({
 	name,
@@ -19,7 +18,7 @@ export const ProjectCard = ({
 	const router = useRouter();
 	const [{ data }] = useCurrentUserQuery();
 	const isOwner = data?.currentUser?.id === owner.id;
-	const [, deleteProject] = useDeleteProjectMutation();
+	const [, deleteTask] = useDeleteTaskMutation();
 
 	return (
 		<Box w="445px" shadow="xl" rounded="lg" p={6} overflow="hidden">
@@ -29,7 +28,7 @@ export const ProjectCard = ({
 					<IconButton
 						aria-label="Delete project"
 						icon={<CloseIcon w={4} h={4} color="red.500" />}
-						onClick={() => window.confirm('Are you sure you want to delete this project?') && deleteProject({ id })}
+						onClick={() => window.confirm('Are you sure you want to delete this project?') && deleteTask({ id })}
 					/>
 				)}
 			</HStack>
@@ -39,8 +38,8 @@ export const ProjectCard = ({
 					<Avatar src={owner.image!} alt={'P P'} />
 					<Text fontWeight={500}>{owner.name}</Text>
 				</HStack>
-				<Button onClick={() => router.push(Routes.project(id))}>
-					<Link href={Routes.project(id)} text="Show" />
+				<Button isDisabled={!data?.currentUser} onClick={() => router.push(Routes.project(id))}>
+					Show
 				</Button>
 			</HStack>
 		</Box>
