@@ -7,15 +7,24 @@ import { Container } from '../components/Container';
 import { Header } from '../components/Header';
 import { Main } from '../components/Main';
 import { ProjectCard } from '../components/ProjectCard';
-import { useCurrentUserQuery, useProjectsQuery } from '../graphql/generated/graphql';
-import { Routes } from '../utils/constants';
+import { ProjectFilterInput, useCurrentUserQuery, useProjectsQuery } from '../graphql/generated/graphql';
+import { Queries, Routes } from '../utils/constants';
 import { createUrqlClient } from '../utils/uqrlUtils';
 
 const Projects = () => {
-	const [variables] = useState({ limit: 5, offset: 0 });
-	const [{ data, fetching }] = useProjectsQuery({ variables: { filter: variables } });
-	const router = useRouter();
 	const [{ data: userData, fetching: userFetching }] = useCurrentUserQuery();
+
+	const filterInput: ProjectFilterInput = {
+		limit: Queries.limit,
+		offset: 0,
+		collaboratorId: Number(userData?.currentUser?.id) || undefined,
+	};
+
+	const [filter] = useState(filterInput);
+
+	const [{ data, fetching }] = useProjectsQuery({ variables: { filter } });
+
+	const router = useRouter();
 
 	return (
 		<Container>
