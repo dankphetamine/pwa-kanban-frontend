@@ -30,7 +30,7 @@ const Login = () => {
 
 								const response = await login(values);
 								if (response.error) actions.setErrors({ email: response.error.message });
-								else router.push('/');
+								else router.push(Routes.home);
 							}}
 						>
 							{({ isSubmitting }) => (

@@ -12,5 +12,5 @@ Redirect.propTypes = {
 };
 
 Redirect.defaultProps = {
-	url: '/',
+	url: Routes.home,
 };
