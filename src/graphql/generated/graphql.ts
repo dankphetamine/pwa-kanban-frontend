@@ -41,7 +41,7 @@ export type QueryProjectArgs = {
 };
 
 export type QueryProjectsArgs = {
-	filter?: Maybe<ProjectFilterInput>;
+	filter: ProjectFilterInput;
 };
 
 export type QueryTaskArgs = {
@@ -49,7 +49,7 @@ export type QueryTaskArgs = {
 };
 
 export type QueryTasksArgs = {
-	filter?: Maybe<TaskFilterInput>;
+	filter: TaskFilterInput;
 };
 
 export type QueryUserArgs = {
@@ -339,10 +339,15 @@ export type QueryResolvers<
 		Maybe<Array<ResolversTypes['Project']>>,
 		ParentType,
 		ContextType,
-		RequireFields<QueryProjectsArgs, never>
+		RequireFields<QueryProjectsArgs, 'filter'>
 	>;
 	task?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<QueryTaskArgs, 'id'>>;
-	tasks?: Resolver<Maybe<Array<ResolversTypes['Task']>>, ParentType, ContextType, RequireFields<QueryTasksArgs, never>>;
+	tasks?: Resolver<
+		Maybe<Array<ResolversTypes['Task']>>,
+		ParentType,
+		ContextType,
+		RequireFields<QueryTasksArgs, 'filter'>
+	>;
 	user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'email'>>;
 	users?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
 	currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
@@ -507,7 +512,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 export type LoginMutation = { __typename?: 'Mutation' } & {
-	login: { __typename?: 'User' } & Pick<User, 'name'> & BaseUserFragment;
+	login: { __typename?: 'User' } & Pick<User, 'name' | 'image'> & BaseUserFragment;
 };
 
 export type LogOutMutationVariables = Exact<{ [key: string]: never }>;
@@ -600,7 +605,7 @@ export type ProjectQuery = { __typename?: 'Query' } & {
 };
 
 export type ProjectsQueryVariables = Exact<{
-	filter?: Maybe<ProjectFilterInput>;
+	filter: ProjectFilterInput;
 }>;
 
 export type ProjectsQuery = { __typename?: 'Query' } & {
@@ -640,7 +645,7 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CurrentUserQuery = { __typename?: 'Query' } & {
 	currentUser?: Maybe<
-		{ __typename?: 'User' } & Pick<User, 'image'> & {
+		{ __typename?: 'User' } & Pick<User, 'image' | 'name'> & {
 				projects?: Maybe<Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'name'>>>;
 			} & BaseUserFragment
 	>;
@@ -704,6 +709,7 @@ export const LoginDocument = gql`
 		login(input: { email: $email, password: $password }) {
 			...BaseUser
 			name
+			image
 		}
 	}
 	${BaseUserFragmentDoc}
@@ -845,7 +851,7 @@ export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVari
 	return Urql.useQuery<ProjectQuery>({ query: ProjectDocument, ...options });
 }
 export const ProjectsDocument = gql`
-	query Projects($filter: ProjectFilterInput) {
+	query Projects($filter: ProjectFilterInput!) {
 		projects(filter: $filter) {
 			...BaseProject
 			collaborators {
@@ -907,6 +913,7 @@ export const CurrentUserDocument = gql`
 		currentUser {
 			...BaseUser
 			image
+			name
 			projects {
 				id
 				name

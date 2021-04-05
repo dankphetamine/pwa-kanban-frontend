@@ -22,7 +22,7 @@ query Project($id: Int!) {
 	}
 }
 
-query Projects($filter: ProjectFilterInput) {
+query Projects($filter: ProjectFilterInput!) {
 	projects(filter: $filter) {
 		...BaseProject
 		collaborators {

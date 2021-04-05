@@ -99,9 +99,13 @@
 								"name": "filter",
 								"description": null,
 								"type": {
-									"kind": "INPUT_OBJECT",
-									"name": "ProjectFilterInput",
-									"ofType": null
+									"kind": "NON_NULL",
+									"name": null,
+									"ofType": {
+										"kind": "INPUT_OBJECT",
+										"name": "ProjectFilterInput",
+										"ofType": null
+									}
 								},
 								"defaultValue": null,
 								"isDeprecated": false,
@@ -161,9 +165,13 @@
 								"name": "filter",
 								"description": null,
 								"type": {
-									"kind": "INPUT_OBJECT",
-									"name": "TaskFilterInput",
-									"ofType": null
+									"kind": "NON_NULL",
+									"name": null,
+									"ofType": {
+										"kind": "INPUT_OBJECT",
+										"name": "TaskFilterInput",
+										"ofType": null
+									}
 								},
 								"defaultValue": null,
 								"isDeprecated": false,
