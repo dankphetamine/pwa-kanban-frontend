@@ -17,7 +17,7 @@ const Projects = () => {
 	const filterInput: ProjectFilterInput = {
 		limit: Queries.limit,
 		offset: 0,
-		collaboratorId: Number(userData?.currentUser?.id) || undefined,
+		userId: Number(userData?.currentUser?.id) || undefined,
 	};
 
 	const [filter] = useState(filterInput);
@@ -66,7 +66,7 @@ const Projects = () => {
 						<Header title="No projects found" />
 					</Box>
 				)}
-				{!fetching && (
+				{!fetching && data && (
 					<SimpleGrid columns={3} spacingX="12" spacingY="12" mb="8">
 						{data?.projects?.map(p => {
 							return (
