@@ -1,23 +1,11 @@
 query Project($id: Int!) {
 	project(id: $id) {
 		...BaseProject
-		collaborators {
-			id
-			name
-		}
 		tasks {
 			id
 			title
 			description
 			status
-			reporter {
-				...BaseUser
-				image
-			}
-			asignee {
-				...BaseUser
-				image
-			}
 		}
 	}
 }
@@ -25,10 +13,6 @@ query Project($id: Int!) {
 query Projects($filter: ProjectFilterInput!) {
 	projects(filter: $filter) {
 		...BaseProject
-		collaborators {
-			id
-			name
-		}
 		owner {
 			id
 			name

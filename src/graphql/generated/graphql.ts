@@ -21,8 +21,6 @@ export type Scalars = {
 
 export type Query = {
 	__typename?: 'Query';
-	comment?: Maybe<Comment>;
-	comments?: Maybe<Array<Comment>>;
 	project?: Maybe<Project>;
 	projects?: Maybe<Array<Project>>;
 	task?: Maybe<Task>;
@@ -30,10 +28,6 @@ export type Query = {
 	user?: Maybe<User>;
 	users?: Maybe<Array<User>>;
 	currentUser?: Maybe<User>;
-};
-
-export type QueryCommentArgs = {
-	id: Scalars['Int'];
 };
 
 export type QueryProjectArgs = {
@@ -60,37 +54,12 @@ export type QueryUsersArgs = {
 	filter?: Maybe<FilterInput>;
 };
 
-export type Comment = {
-	__typename?: 'Comment';
-	id: Scalars['Int'];
-	task: Task;
-	author: User;
-	text: Scalars['String'];
-	createdAt: Scalars['DateTime'];
-	updatedAt: Scalars['DateTime'];
-};
-
-export type Task = {
-	__typename?: 'Task';
-	id: Scalars['ID'];
-	project: Project;
-	reporter: User;
-	asignee?: Maybe<User>;
-	title: Scalars['String'];
-	description?: Maybe<Scalars['String']>;
-	status?: Maybe<Scalars['String']>;
-	comments?: Maybe<Array<Comment>>;
-	createdAt: Scalars['DateTime'];
-	updatedAt: Scalars['DateTime'];
-};
-
 export type Project = {
 	__typename?: 'Project';
 	id: Scalars['Int'];
 	name: Scalars['String'];
 	description?: Maybe<Scalars['String']>;
 	owner: User;
-	collaborators?: Maybe<Array<User>>;
 	tasks?: Maybe<Array<Task>>;
 	createdAt: Scalars['DateTime'];
 	updatedAt: Scalars['DateTime'];
@@ -103,8 +72,18 @@ export type User = {
 	name?: Maybe<Scalars['String']>;
 	image?: Maybe<Scalars['String']>;
 	tasks?: Maybe<Array<Task>>;
-	comments?: Maybe<Array<Comment>>;
 	projects?: Maybe<Array<Project>>;
+	createdAt: Scalars['DateTime'];
+	updatedAt: Scalars['DateTime'];
+};
+
+export type Task = {
+	__typename?: 'Task';
+	id: Scalars['ID'];
+	project: Project;
+	title: Scalars['String'];
+	description?: Maybe<Scalars['String']>;
+	status?: Maybe<Scalars['String']>;
 	createdAt: Scalars['DateTime'];
 	updatedAt: Scalars['DateTime'];
 };
@@ -128,7 +107,6 @@ export type FilterInput = {
 
 export type Mutation = {
 	__typename?: 'Mutation';
-	createComment?: Maybe<Comment>;
 	createProject?: Maybe<Project>;
 	updateProjectText?: Maybe<Project>;
 	deleteProject?: Maybe<Project>;
@@ -139,11 +117,6 @@ export type Mutation = {
 	login: User;
 	updateUserName?: Maybe<User>;
 	logout: Scalars['Boolean'];
-};
-
-export type MutationCreateCommentArgs = {
-	taskId: Scalars['Int'];
-	text: Scalars['String'];
 };
 
 export type MutationCreateProjectArgs = {
@@ -196,7 +169,6 @@ export type ProjectUpdateInput = {
 export type TaskUpdateInput = {
 	title?: Maybe<Scalars['String']>;
 	description?: Maybe<Scalars['String']>;
-	asigneeId?: Maybe<Scalars['Float']>;
 	status?: Maybe<Scalars['String']>;
 };
 
@@ -289,11 +261,10 @@ export type ResolversTypes = {
 	Query: ResolverTypeWrapper<{}>;
 	Int: ResolverTypeWrapper<Scalars['Int']>;
 	String: ResolverTypeWrapper<Scalars['String']>;
-	Comment: ResolverTypeWrapper<Comment>;
-	Task: ResolverTypeWrapper<Task>;
-	ID: ResolverTypeWrapper<Scalars['ID']>;
 	Project: ResolverTypeWrapper<Project>;
 	User: ResolverTypeWrapper<User>;
+	ID: ResolverTypeWrapper<Scalars['ID']>;
+	Task: ResolverTypeWrapper<Task>;
 	DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
 	ProjectFilterInput: ProjectFilterInput;
 	TaskFilterInput: TaskFilterInput;
@@ -302,7 +273,6 @@ export type ResolversTypes = {
 	Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 	ProjectUpdateInput: ProjectUpdateInput;
 	TaskUpdateInput: TaskUpdateInput;
-	Float: ResolverTypeWrapper<Scalars['Float']>;
 	AuthInput: AuthInput;
 };
 
@@ -311,11 +281,10 @@ export type ResolversParentTypes = {
 	Query: {};
 	Int: Scalars['Int'];
 	String: Scalars['String'];
-	Comment: Comment;
-	Task: Task;
-	ID: Scalars['ID'];
 	Project: Project;
 	User: User;
+	ID: Scalars['ID'];
+	Task: Task;
 	DateTime: Scalars['DateTime'];
 	ProjectFilterInput: ProjectFilterInput;
 	TaskFilterInput: TaskFilterInput;
@@ -324,7 +293,6 @@ export type ResolversParentTypes = {
 	Boolean: Scalars['Boolean'];
 	ProjectUpdateInput: ProjectUpdateInput;
 	TaskUpdateInput: TaskUpdateInput;
-	Float: Scalars['Float'];
 	AuthInput: AuthInput;
 };
 
@@ -332,8 +300,6 @@ export type QueryResolvers<
 	ContextType = any,
 	ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
 > = {
-	comment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryCommentArgs, 'id'>>;
-	comments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>;
 	project?: Resolver<Maybe<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<QueryProjectArgs, 'id'>>;
 	projects?: Resolver<
 		Maybe<Array<ResolversTypes['Project']>>,
@@ -353,36 +319,6 @@ export type QueryResolvers<
 	currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
-export type CommentResolvers<
-	ContextType = any,
-	ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']
-> = {
-	id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-	task?: Resolver<ResolversTypes['Task'], ParentType, ContextType>;
-	author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-	text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-	createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-	updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type TaskResolvers<
-	ContextType = any,
-	ParentType extends ResolversParentTypes['Task'] = ResolversParentTypes['Task']
-> = {
-	id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-	project?: Resolver<ResolversTypes['Project'], ParentType, ContextType>;
-	reporter?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-	asignee?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-	title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-	description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-	status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-	comments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>;
-	createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-	updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type ProjectResolvers<
 	ContextType = any,
 	ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']
@@ -391,7 +327,6 @@ export type ProjectResolvers<
 	name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 	description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 	owner?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-	collaborators?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
 	tasks?: Resolver<Maybe<Array<ResolversTypes['Task']>>, ParentType, ContextType>;
 	createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
 	updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -407,8 +342,21 @@ export type UserResolvers<
 	name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 	image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 	tasks?: Resolver<Maybe<Array<ResolversTypes['Task']>>, ParentType, ContextType>;
-	comments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>;
 	projects?: Resolver<Maybe<Array<ResolversTypes['Project']>>, ParentType, ContextType>;
+	createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+	updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TaskResolvers<
+	ContextType = any,
+	ParentType extends ResolversParentTypes['Task'] = ResolversParentTypes['Task']
+> = {
+	id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+	project?: Resolver<ResolversTypes['Project'], ParentType, ContextType>;
+	title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+	description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+	status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 	createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
 	updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -422,12 +370,6 @@ export type MutationResolvers<
 	ContextType = any,
 	ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
 > = {
-	createComment?: Resolver<
-		Maybe<ResolversTypes['Comment']>,
-		ParentType,
-		ContextType,
-		RequireFields<MutationCreateCommentArgs, 'taskId' | 'text'>
-	>;
 	createProject?: Resolver<
 		Maybe<ResolversTypes['Project']>,
 		ParentType,
@@ -477,10 +419,9 @@ export type MutationResolvers<
 
 export type Resolvers<ContextType = any> = {
 	Query?: QueryResolvers<ContextType>;
-	Comment?: CommentResolvers<ContextType>;
-	Task?: TaskResolvers<ContextType>;
 	Project?: ProjectResolvers<ContextType>;
 	User?: UserResolvers<ContextType>;
+	Task?: TaskResolvers<ContextType>;
 	DateTime?: GraphQLScalarType;
 	Mutation?: MutationResolvers<ContextType>;
 };
@@ -549,10 +490,7 @@ export type CreateTaskMutationVariables = Exact<{
 
 export type CreateTaskMutation = { __typename?: 'Mutation' } & {
 	createTask?: Maybe<
-		{ __typename?: 'Task' } & {
-			project: { __typename?: 'Project' } & Pick<Project, 'id' | 'name'>;
-			reporter: { __typename?: 'User' } & Pick<User, 'id'>;
-		} & BaseTaskFragment
+		{ __typename?: 'Task' } & { project: { __typename?: 'Project' } & Pick<Project, 'id' | 'name'> } & BaseTaskFragment
 	>;
 };
 
@@ -589,15 +527,7 @@ export type ProjectQueryVariables = Exact<{
 export type ProjectQuery = { __typename?: 'Query' } & {
 	project?: Maybe<
 		{ __typename?: 'Project' } & {
-			collaborators?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
-			tasks?: Maybe<
-				Array<
-					{ __typename?: 'Task' } & Pick<Task, 'id' | 'title' | 'description' | 'status'> & {
-							reporter: { __typename?: 'User' } & Pick<User, 'image'> & BaseUserFragment;
-							asignee?: Maybe<{ __typename?: 'User' } & Pick<User, 'image'> & BaseUserFragment>;
-						}
-				>
-			>;
+			tasks?: Maybe<Array<{ __typename?: 'Task' } & Pick<Task, 'id' | 'title' | 'description' | 'status'>>>;
 		} & BaseProjectFragment
 	>;
 };
@@ -610,7 +540,6 @@ export type ProjectsQuery = { __typename?: 'Query' } & {
 	projects?: Maybe<
 		Array<
 			{ __typename?: 'Project' } & {
-				collaborators?: Maybe<Array<{ __typename?: 'User' } & Pick<User, 'id' | 'name'>>>;
 				owner: { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'image'>;
 				tasks?: Maybe<Array<{ __typename?: 'Task' } & Pick<Task, 'id' | 'title'>>>;
 			} & BaseProjectFragment
@@ -624,18 +553,7 @@ export type TaskQueryVariables = Exact<{
 
 export type TaskQuery = { __typename?: 'Query' } & {
 	task?: Maybe<
-		{ __typename?: 'Task' } & {
-			project: { __typename?: 'Project' } & Pick<Project, 'id' | 'name'>;
-			reporter: { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'image'>;
-			asignee?: Maybe<{ __typename?: 'User' } & Pick<User, 'id' | 'name' | 'image'>>;
-			comments?: Maybe<
-				Array<
-					{ __typename?: 'Comment' } & Pick<Comment, 'id' | 'text'> & {
-							task: { __typename?: 'Task' } & Pick<Task, 'id'>;
-						}
-				>
-			>;
-		} & BaseTaskFragment
+		{ __typename?: 'Task' } & { project: { __typename?: 'Project' } & Pick<Project, 'id' | 'name'> } & BaseTaskFragment
 	>;
 };
 
@@ -768,9 +686,6 @@ export const CreateTaskDocument = gql`
 				id
 				name
 			}
-			reporter {
-				id
-			}
 		}
 	}
 	${BaseTaskFragmentDoc}
@@ -820,28 +735,15 @@ export const ProjectDocument = gql`
 	query Project($id: Int!) {
 		project(id: $id) {
 			...BaseProject
-			collaborators {
-				id
-				name
-			}
 			tasks {
 				id
 				title
 				description
 				status
-				reporter {
-					...BaseUser
-					image
-				}
-				asignee {
-					...BaseUser
-					image
-				}
 			}
 		}
 	}
 	${BaseProjectFragmentDoc}
-	${BaseUserFragmentDoc}
 `;
 
 export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'> = {}) {
@@ -851,10 +753,6 @@ export const ProjectsDocument = gql`
 	query Projects($filter: ProjectFilterInput!) {
 		projects(filter: $filter) {
 			...BaseProject
-			collaborators {
-				id
-				name
-			}
 			owner {
 				id
 				name
@@ -879,23 +777,6 @@ export const TaskDocument = gql`
 			project {
 				id
 				name
-			}
-			reporter {
-				id
-				name
-				image
-			}
-			asignee {
-				id
-				name
-				image
-			}
-			comments {
-				id
-				text
-				task {
-					id
-				}
 			}
 		}
 	}

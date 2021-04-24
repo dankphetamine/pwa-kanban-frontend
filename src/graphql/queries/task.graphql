@@ -5,22 +5,5 @@ query Task($id: Int!) {
 			id
 			name
 		}
-		reporter {
-			id
-			name
-			image
-		}
-		asignee {
-			id
-			name
-			image
-		}
-		comments {
-			id
-			text
-			task {
-				id
-			}
-		}
 	}
 }

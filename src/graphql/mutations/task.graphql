@@ -5,9 +5,6 @@ mutation CreateTask($projectId: Int!, $title: String!, $description: String!) {
 			id
 			name
 		}
-		reporter {
-			id
-		}
 	}
 }
 
