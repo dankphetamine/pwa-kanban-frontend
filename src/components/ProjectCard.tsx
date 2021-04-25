@@ -38,7 +38,7 @@ export const ProjectCard = ({
 					<Avatar src={owner.image!} alt={'P P'} />
 					<Text fontWeight={500}>{owner.name}</Text>
 				</HStack>
-				<Button isDisabled={!data?.currentUser} onClick={() => router.push(Routes.project(id))}>
+				<Button isDisabled={data?.currentUser?.id !== owner.id} onClick={() => router.push(Routes.project(id))}>
 					Show
 				</Button>
 			</HStack>
