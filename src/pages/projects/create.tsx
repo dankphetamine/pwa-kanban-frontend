@@ -3,14 +3,14 @@ import { Form, Formik } from 'formik';
 import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
 import React from 'react';
-import { Container } from '../components/Container';
-import { Header } from '../components/Header';
-import { InputField } from '../components/InputField';
-import { Main } from '../components/Main';
-import { Redirect } from '../components/Redirect';
-import { useCreateProjectMutation, useCurrentUserQuery } from '../graphql/generated/graphql';
-import { Routes } from '../utils/constants';
-import { createUrqlClient } from '../utils/uqrlUtils';
+import { Container } from '../../components/Container';
+import { Header } from '../../components/Header';
+import { InputField } from '../../components/InputField';
+import { Main } from '../../components/Main';
+import { Redirect } from '../../components/Redirect';
+import { useCreateProjectMutation, useCurrentUserQuery } from '../../graphql/generated/graphql';
+import { Routes } from '../../utils/constants';
+import { createUrqlClient } from '../../utils/uqrlUtils';
 
 const CreateNewProject = () => {
 	const [{ data, fetching }] = useCurrentUserQuery();
