@@ -63,7 +63,7 @@ const Index = () => {
 									</Text>
 
 									<Box mt={8}>
-										<Link href={Routes.project_add} text="start now" />
+										<Link href={Routes.project_create} text="start now" />
 									</Box>
 								</Box>
 							</Flex>

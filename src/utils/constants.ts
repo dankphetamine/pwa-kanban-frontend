@@ -13,7 +13,7 @@ export const Routes = {
 	project: (id: number | string) => `/projects/${id}`,
 	projects: '/projects',
 	profile: '/profile',
-	project_add: '/add-project',
+	project_create: 'projects/create',
 	user: (id: number | string) => `/users/${id}`,
 	users: '/users',
 };
