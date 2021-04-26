@@ -1,6 +1,7 @@
 query Project($id: Int!) {
 	project(id: $id) {
 		...BaseProject
+
 		tasks {
 			id
 			title
