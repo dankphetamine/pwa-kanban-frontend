@@ -63,6 +63,7 @@ export type ColumnNames = 'toDo' | 'inProgress' | 'done';
 export interface Action {
 	type: DragNDropStatus;
 	payload?: any;
+	draggableId: string;
 }
 
 export interface Column {
