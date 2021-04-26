@@ -10,7 +10,7 @@ import {
 	Text,
 } from '@chakra-ui/react';
 import { withUrqlClient } from 'next-urql';
-import { Container } from 'next/app';
+import { Container } from '../components/Container';
 import { Main } from '../components/Main';
 import { Link } from '../components/NavigationLink';
 import { Routes } from '../utils/constants';

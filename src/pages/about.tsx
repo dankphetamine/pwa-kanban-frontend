@@ -1,7 +1,7 @@
 import { CheckIcon } from '@chakra-ui/icons';
 import { Box, Container as ChakraContainer, Heading, HStack, SimpleGrid, Stack, Text, VStack } from '@chakra-ui/react';
 import { withUrqlClient } from 'next-urql';
-import { Container } from 'next/app';
+import { Container } from '../components/Container';
 import { Main } from '../components/Main';
 import { createUrqlClient } from '../utils/uqrlUtils';
 
