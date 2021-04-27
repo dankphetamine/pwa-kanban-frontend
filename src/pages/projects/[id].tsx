@@ -1,4 +1,5 @@
 import { Box, SimpleGrid, SkeletonText } from '@chakra-ui/react';
+import { isInteger } from 'formik';
 import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
 import { useReducer } from 'react';
@@ -8,22 +9,25 @@ import { Header } from '../../components/Header';
 import { Main } from '../../components/Main';
 import { ProjectColumn } from '../../components/ProjectColumn';
 import { Redirect } from '../../components/Redirect';
-import { Task, useCurrentUserQuery, useProjectQuery } from '../../graphql/generated/graphql';
-import { Action, Column, ColumnState, DragNDropStatus, initialColumns } from '../../utils/constants';
+import { Task, useProjectQuery, useUpdateTaskMutation } from '../../graphql/generated/graphql';
+import { Column, ColumnState, DragNDropAction, DragNDropStatus, initialColumns } from '../../utils/constants';
 import { createUrqlClient } from '../../utils/uqrlUtils';
 
 const Project = () => {
 	const router = useRouter();
 	const { id } = router.query;
-	if (!id || typeof id !== 'string') return Redirect();
-	const [{ data: userData }] = useCurrentUserQuery();
+	if (!id || !isInteger(id) || typeof id !== 'string') return Redirect();
 	const [{ data, fetching }] = useProjectQuery({ variables: { id: parseInt(id) } });
 
+	const [, updateTask] = useUpdateTaskMutation();
+
 	/** Reducer function */
-	const reducer = (columnState: ColumnState, action: Action): ColumnState => {
+	const reducer = (columnState: ColumnState, action: DragNDropAction): ColumnState => {
 		if (action.type === DragNDropStatus.Reordered) return { ...columnState, ...action.payload };
 		if (action.type === DragNDropStatus.Moved) {
 			// run UPDATE mutation
+			// Temporary shit solution to console log inside empty .then() to allow promise without async parent
+			updateTask({ id: parseInt(action.event.draggableId), input: action.event.input! }).then(() => console.log());
 
 			return { ...columnState, ...action.payload };
 		}
@@ -43,9 +47,7 @@ const Project = () => {
 
 	const [columnState, dispatch] = useReducer(reducer, populateColumns(initialColumns));
 
-	if (!fetching && !data?.project?.collaborators?.some(u => u.id === userData?.currentUser?.id)) return Redirect();
-
-	const onDragEnd = ({ source, destination }: DropResult) => {
+	const onDragEnd = ({ source, destination, draggableId }: DropResult) => {
 		if (!destination || (source.droppableId === destination.droppableId && destination.index === source.index)) return;
 
 		const startCol = columnState[source.droppableId];
@@ -61,6 +63,7 @@ const Project = () => {
 			return dispatch({
 				type: DragNDropStatus.Reordered,
 				payload: { [newCol.name]: newCol },
+				event: { draggableId },
 			});
 		} else {
 			const newStartList = startCol.tasks.filter((_, i) => i !== source.index);
@@ -74,6 +77,7 @@ const Project = () => {
 			return dispatch({
 				type: DragNDropStatus.Moved,
 				payload: { [newStartCol.name]: newStartCol, [newEndCol.name]: newEndCol },
+				event: { draggableId, input: { status: endCol.name } },
 			});
 		}
 	};
@@ -89,6 +93,7 @@ const Project = () => {
 				{data?.project && (
 					<>
 						<Header title={`Project ${id}`} />
+
 						<DragDropContext onDragEnd={onDragEnd}>
 							<SimpleGrid columns={3} spacingX="56" spacingY="16" mb="8">
 								{Object.values(columnState).map(col => (
