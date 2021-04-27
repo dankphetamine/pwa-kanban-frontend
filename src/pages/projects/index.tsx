@@ -17,7 +17,6 @@ const Projects = () => {
 	const filterInput: ProjectFilterInput = {
 		limit: Queries.limit,
 		offset: 0,
-		userId: Number(userData?.currentUser?.id) || undefined,
 	};
 
 	const [filter] = useState(filterInput);
@@ -41,7 +40,7 @@ const Projects = () => {
 						variant="solid"
 						colorScheme="green"
 						disabled={!userFetching && !userData?.currentUser}
-						onClick={() => router.push(Routes.project_add)}
+						onClick={() => router.push(Routes.project_create)}
 					/>
 				</Flex>
 
@@ -61,11 +60,13 @@ const Projects = () => {
 						</Box>
 					</SimpleGrid>
 				)}
+
 				{!fetching && !data && (
 					<Box my={12}>
 						<Header title="No projects found" />
 					</Box>
 				)}
+
 				{!fetching && data && (
 					<SimpleGrid columns={3} spacingX="12" spacingY="12" mb="8">
 						{data?.projects?.map(p => {
