@@ -1,4 +1,4 @@
-import { Task } from './../graphql/generated/graphql';
+import { Task, TaskUpdateInput } from './../graphql/generated/graphql';
 export const Colors = {
 	bgColor: { light: 'messenger.300', dark: 'messenger.800' },
 	color: { light: 'black', dark: 'white' },
@@ -42,7 +42,6 @@ export const splitCamelCase = (str: string) => {
 	return str.replace(/([a-z])([A-Z])/g, '$1 $2');
 };
 
-// /(?:^|\s|[-"'([{])+\S/g
 export const initialColumns: ColumnState = {
 	toDo: {
 		name: 'toDo',
@@ -60,10 +59,10 @@ export const initialColumns: ColumnState = {
 
 export type ColumnNames = 'toDo' | 'inProgress' | 'done';
 
-export interface Action {
+export interface DragNDropAction {
 	type: DragNDropStatus;
-	payload?: any;
-	draggableId: string;
+	payload: ColumnState;
+	event: { draggableId: string; input?: TaskUpdateInput };
 }
 
 export interface Column {
