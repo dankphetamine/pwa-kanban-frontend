@@ -1,11 +1,11 @@
 import { Cache, cacheExchange, QueryInput } from '@urql/exchange-graphcache';
-import { simplePagination } from '@urql/exchange-graphcache/extras';
 import { SSRExchange } from 'next-urql';
 import { dedupExchange, fetchExchange } from 'urql';
 import {
 	CurrentUserDocument,
 	CurrentUserQuery,
 	DeleteProjectMutationVariables,
+	DeleteTaskMutationVariables,
 	LoginMutation,
 } from '../graphql/generated/graphql';
 import { graphqlURL } from './constants';
@@ -27,7 +27,7 @@ export const createUrqlClient = (ssr: SSRExchange) => ({
 		cacheExchange({
 			resolvers: {
 				Query: {
-					Posts: simplePagination(),
+					// Posts: simplePagination(),
 				},
 			},
 			updates: {
@@ -57,6 +57,10 @@ export const createUrqlClient = (ssr: SSRExchange) => ({
 
 					deleteProject: (_result, args, cache, _info) => {
 						cache.invalidate({ __typename: 'Project', id: (args as DeleteProjectMutationVariables).id });
+					},
+
+					deleteTask: (_result, args, cache, _info) => {
+						cache.invalidate({ __typename: 'Task', id: (args as DeleteTaskMutationVariables).id });
 					},
 				},
 			},
