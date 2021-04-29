@@ -14,7 +14,6 @@ export const ProjectTask = ({ task, index }: { task: Task; index: number }) => {
 					shadow="md"
 					rounded="lg"
 					p={4}
-					my={2}
 					bgColor="gray.500"
 					ref={provided.innerRef}
 					{...provided.draggableProps}
