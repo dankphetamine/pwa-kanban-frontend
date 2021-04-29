@@ -3,10 +3,15 @@ import { useState } from 'react';
 import { Container } from '../../components/Container';
 import { Header } from '../../components/Header';
 import { Main } from '../../components/Main';
-import { useProjectsQuery } from '../../graphql/generated/graphql';
+import { Redirect } from '../../components/Redirect';
+import { useCurrentUserQuery, useProjectsQuery } from '../../graphql/generated/graphql';
+import { Routes } from '../../utils/constants';
 import { createUrqlClient } from '../../utils/uqrlUtils';
 
-const Projects = () => {
+const Profile = () => {
+	const [{ data: userData, fetching }] = useCurrentUserQuery();
+	if (!fetching && !userData) return <Redirect url={Routes.login} />;
+
 	const [variables] = useState({ limit: 5, offset: 0 });
 	const [{ data, fetching: _fetching }] = useProjectsQuery({ variables: { filter: variables } });
 	// const [{ data, fetching }] = usePostsQuery({ variables: {} });
@@ -20,4 +25,4 @@ const Projects = () => {
 	);
 };
 
-export default withUrqlClient(createUrqlClient)(Projects);
+export default withUrqlClient(createUrqlClient)(Profile);
