@@ -8,6 +8,7 @@ import {
 	DeleteTaskMutationVariables,
 	LoginMutation,
 } from '../graphql/generated/graphql';
+import { UpdateTaskMutationVariables } from './../graphql/generated/graphql';
 import { graphqlURL } from './constants';
 
 export function AuthCacheQuery<Result, Query>(
@@ -61,6 +62,10 @@ export const createUrqlClient = (ssr: SSRExchange) => ({
 
 					deleteTask: (_result, args, cache, _info) => {
 						cache.invalidate({ __typename: 'Task', id: (args as DeleteTaskMutationVariables).id });
+					},
+
+					updateTask: (_result, args, cache, _info) => {
+						cache.invalidate({ __typename: 'Task', id: (args as UpdateTaskMutationVariables).id });
 					},
 				},
 			},
