@@ -60,7 +60,6 @@ export type Project = {
 	name: Scalars['String'];
 	description?: Maybe<Scalars['String']>;
 	owner: User;
-	ownerId: User;
 	tasks?: Maybe<Array<Task>>;
 	createdAt: Scalars['DateTime'];
 	updatedAt: Scalars['DateTime'];
@@ -328,7 +327,6 @@ export type ProjectResolvers<
 	name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 	description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 	owner?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-	ownerId?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
 	tasks?: Resolver<Maybe<Array<ResolversTypes['Task']>>, ParentType, ContextType>;
 	createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
 	updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
