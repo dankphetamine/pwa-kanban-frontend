@@ -3,4 +3,7 @@ module.exports = {
 	eslint: {
 		dev: true,
 	},
+	future: {
+		webpack5: true,
+	},
 };
