@@ -1,12 +1,8 @@
 query Project($id: Int!) {
 	project(id: $id) {
 		...BaseProject
-
 		tasks {
-			id
-			title
-			description
-			status
+			...BaseTask
 		}
 	}
 }
@@ -20,8 +16,7 @@ query Projects($filter: ProjectFilterInput!) {
 			image
 		}
 		tasks {
-			id
-			title
+			...BaseTask
 		}
 	}
 }

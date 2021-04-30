@@ -452,9 +452,7 @@ export type LoginMutationVariables = Exact<{
 	password: Scalars['String'];
 }>;
 
-export type LoginMutation = { __typename?: 'Mutation' } & {
-	login: { __typename?: 'User' } & Pick<User, 'name'> & BaseUserFragment;
-};
+export type LoginMutation = { __typename?: 'Mutation' } & { login: { __typename?: 'User' } & BaseUserFragment };
 
 export type LogOutMutationVariables = Exact<{ [key: string]: never }>;
 
@@ -492,7 +490,7 @@ export type CreateTaskMutationVariables = Exact<{
 
 export type CreateTaskMutation = { __typename?: 'Mutation' } & {
 	createTask?: Maybe<
-		{ __typename?: 'Task' } & { project: { __typename?: 'Project' } & Pick<Project, 'id' | 'name'> } & BaseTaskFragment
+		{ __typename?: 'Task' } & { project: { __typename?: 'Project' } & BaseProjectFragment } & BaseTaskFragment
 	>;
 };
 
@@ -502,7 +500,7 @@ export type UpdateTaskMutationVariables = Exact<{
 }>;
 
 export type UpdateTaskMutation = { __typename?: 'Mutation' } & {
-	updateTask?: Maybe<{ __typename?: 'Task' } & Pick<Task, 'title' | 'description' | 'status'>>;
+	updateTask?: Maybe<{ __typename?: 'Task' } & BaseTaskFragment>;
 };
 
 export type DeleteTaskMutationVariables = Exact<{
@@ -529,7 +527,7 @@ export type ProjectQueryVariables = Exact<{
 export type ProjectQuery = { __typename?: 'Query' } & {
 	project?: Maybe<
 		{ __typename?: 'Project' } & {
-			tasks?: Maybe<Array<{ __typename?: 'Task' } & Pick<Task, 'id' | 'title' | 'description' | 'status'>>>;
+			tasks?: Maybe<Array<{ __typename?: 'Task' } & BaseTaskFragment>>;
 		} & BaseProjectFragment
 	>;
 };
@@ -543,7 +541,7 @@ export type ProjectsQuery = { __typename?: 'Query' } & {
 		Array<
 			{ __typename?: 'Project' } & {
 				owner: { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'image'>;
-				tasks?: Maybe<Array<{ __typename?: 'Task' } & Pick<Task, 'id' | 'title'>>>;
+				tasks?: Maybe<Array<{ __typename?: 'Task' } & BaseTaskFragment>>;
 			} & BaseProjectFragment
 		>
 	>;
@@ -555,7 +553,7 @@ export type TaskQueryVariables = Exact<{
 
 export type TaskQuery = { __typename?: 'Query' } & {
 	task?: Maybe<
-		{ __typename?: 'Task' } & { project: { __typename?: 'Project' } & Pick<Project, 'id' | 'name'> } & BaseTaskFragment
+		{ __typename?: 'Task' } & { project: { __typename?: 'Project' } & BaseProjectFragment } & BaseTaskFragment
 	>;
 };
 
@@ -563,8 +561,9 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CurrentUserQuery = { __typename?: 'Query' } & {
 	currentUser?: Maybe<
-		{ __typename?: 'User' } & Pick<User, 'image' | 'name'> & {
-				projects?: Maybe<Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'name'>>>;
+		{ __typename?: 'User' } & Pick<User, 'image'> & {
+				projects?: Maybe<Array<{ __typename?: 'Project' } & BaseProjectFragment>>;
+				tasks?: Maybe<Array<{ __typename?: 'Task' } & BaseTaskFragment>>;
 			} & BaseUserFragment
 	>;
 };
@@ -576,7 +575,7 @@ export type UserByEmailQueryVariables = Exact<{
 export type UserByEmailQuery = { __typename?: 'Query' } & {
 	user?: Maybe<
 		{ __typename?: 'User' } & {
-			projects?: Maybe<Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'name'>>>;
+			projects?: Maybe<Array<{ __typename?: 'Project' } & BaseProjectFragment>>;
 		} & BaseUserFragment
 	>;
 };
@@ -589,7 +588,7 @@ export type UsersQuery = { __typename?: 'Query' } & {
 	users?: Maybe<
 		Array<
 			{ __typename?: 'User' } & {
-				projects?: Maybe<Array<{ __typename?: 'Project' } & Pick<Project, 'id' | 'name'>>>;
+				projects?: Maybe<Array<{ __typename?: 'Project' } & BaseProjectFragment>>;
 			} & BaseUserFragment
 		>
 	>;
@@ -626,7 +625,6 @@ export const LoginDocument = gql`
 	mutation Login($email: String!, $password: String!) {
 		login(input: { email: $email, password: $password }) {
 			...BaseUser
-			name
 		}
 	}
 	${BaseUserFragmentDoc}
@@ -685,12 +683,12 @@ export const CreateTaskDocument = gql`
 		createTask(projectId: $projectId, title: $title, description: $description) {
 			...BaseTask
 			project {
-				id
-				name
+				...BaseProject
 			}
 		}
 	}
 	${BaseTaskFragmentDoc}
+	${BaseProjectFragmentDoc}
 `;
 
 export function useCreateTaskMutation() {
@@ -699,11 +697,10 @@ export function useCreateTaskMutation() {
 export const UpdateTaskDocument = gql`
 	mutation UpdateTask($id: Int!, $input: TaskUpdateInput!) {
 		updateTask(id: $id, input: $input) {
-			title
-			description
-			status
+			...BaseTask
 		}
 	}
+	${BaseTaskFragmentDoc}
 `;
 
 export function useUpdateTaskMutation() {
@@ -738,14 +735,12 @@ export const ProjectDocument = gql`
 		project(id: $id) {
 			...BaseProject
 			tasks {
-				id
-				title
-				description
-				status
+				...BaseTask
 			}
 		}
 	}
 	${BaseProjectFragmentDoc}
+	${BaseTaskFragmentDoc}
 `;
 
 export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'> = {}) {
@@ -761,12 +756,12 @@ export const ProjectsDocument = gql`
 				image
 			}
 			tasks {
-				id
-				title
+				...BaseTask
 			}
 		}
 	}
 	${BaseProjectFragmentDoc}
+	${BaseTaskFragmentDoc}
 `;
 
 export function useProjectsQuery(options: Omit<Urql.UseQueryArgs<ProjectsQueryVariables>, 'query'> = {}) {
@@ -777,12 +772,12 @@ export const TaskDocument = gql`
 		task(id: $id) {
 			...BaseTask
 			project {
-				id
-				name
+				...BaseProject
 			}
 		}
 	}
 	${BaseTaskFragmentDoc}
+	${BaseProjectFragmentDoc}
 `;
 
 export function useTaskQuery(options: Omit<Urql.UseQueryArgs<TaskQueryVariables>, 'query'> = {}) {
@@ -793,14 +788,17 @@ export const CurrentUserDocument = gql`
 		currentUser {
 			...BaseUser
 			image
-			name
 			projects {
-				id
-				name
+				...BaseProject
+			}
+			tasks {
+				...BaseTask
 			}
 		}
 	}
 	${BaseUserFragmentDoc}
+	${BaseProjectFragmentDoc}
+	${BaseTaskFragmentDoc}
 `;
 
 export function useCurrentUserQuery(options: Omit<Urql.UseQueryArgs<CurrentUserQueryVariables>, 'query'> = {}) {
@@ -811,12 +809,12 @@ export const UserByEmailDocument = gql`
 		user(email: $email) {
 			...BaseUser
 			projects {
-				id
-				name
+				...BaseProject
 			}
 		}
 	}
 	${BaseUserFragmentDoc}
+	${BaseProjectFragmentDoc}
 `;
 
 export function useUserByEmailQuery(options: Omit<Urql.UseQueryArgs<UserByEmailQueryVariables>, 'query'> = {}) {
@@ -827,12 +825,12 @@ export const UsersDocument = gql`
 		users(filter: $filter) {
 			...BaseUser
 			projects {
-				id
-				name
+				...BaseProject
 			}
 		}
 	}
 	${BaseUserFragmentDoc}
+	${BaseProjectFragmentDoc}
 `;
 
 export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {

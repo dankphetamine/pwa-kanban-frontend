@@ -2,10 +2,11 @@ query CurrentUser {
 	currentUser {
 		...BaseUser
 		image
-		name
 		projects {
-			id
-			name
+			...BaseProject
+		}
+		assignedTasks {
+			...BaseTask
 		}
 	}
 }
@@ -14,8 +15,7 @@ query UserByEmail($email: String!) {
 	user(email: $email) {
 		...BaseUser
 		projects {
-			id
-			name
+			...BaseProject
 		}
 	}
 }
@@ -24,8 +24,7 @@ query Users($filter: FilterInput) {
 	users(filter: $filter) {
 		...BaseUser
 		projects {
-			id
-			name
+			...BaseProject
 		}
 	}
 }

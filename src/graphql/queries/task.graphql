@@ -2,8 +2,7 @@ query Task($id: Int!) {
 	task(id: $id) {
 		...BaseTask
 		project {
-			id
-			name
+			...BaseProject
 		}
 	}
 }
