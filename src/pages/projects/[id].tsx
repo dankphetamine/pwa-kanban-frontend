@@ -27,7 +27,7 @@ const Project = () => {
 		if (action.type === DragNDropStatus.Moved) {
 			// run UPDATE mutation
 			// Temporary shit solution to console log inside empty .then() to allow promise without async parent
-			updateTask({ id: parseInt(action.event.draggableId), input: action.event.input! }).then(() => console.log());
+			updateTask({ id: parseInt(action.event.draggableId), input: action.event.input }).then();
 
 			return { ...columnState, ...action.payload };
 		}
@@ -36,12 +36,16 @@ const Project = () => {
 	};
 
 	function populateColumns(columns: ColumnState) {
-		Object.values(columns).forEach(col => {
-			const filteredTasks = data?.project?.tasks?.filter(t => t.status?.toLowerCase() === col.name.toLowerCase());
-			filteredTasks?.forEach(t => {
-				if (!col.tasks.some(t2 => t2.id === t.id)) col.tasks.push(t as Task);
+		// check if columnState has any elements in tasks array
+		if (!Object.values(columns).some(col => col.tasks.length)) {
+			Object.values(columns).forEach(col => {
+				const filteredTasks = data?.project?.tasks?.filter(t => t.status?.toLowerCase() === col.name.toLowerCase());
+				filteredTasks?.forEach(t => {
+					if (!col.tasks.some(t2 => t2.id === t.id)) col.tasks.push(t as Task);
+				});
 			});
-		});
+		}
+
 		return columns;
 	}
 
@@ -54,6 +58,7 @@ const Project = () => {
 		const endCol = columnState[destination.droppableId];
 
 		if (startCol === endCol) {
+			// reordered
 			const newList = startCol.tasks.filter((_, i) => i !== source.index);
 
 			newList.splice(destination.index, 0, startCol.tasks[source.index]);
@@ -63,7 +68,7 @@ const Project = () => {
 			return dispatch({
 				type: DragNDropStatus.Reordered,
 				payload: { [newCol.name]: newCol },
-				event: { draggableId },
+				event: { draggableId, input: { status: endCol.name } },
 			});
 		} else {
 			const newStartList = startCol.tasks.filter((_, i) => i !== source.index);
