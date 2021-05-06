@@ -1,16 +1,15 @@
-import { Box, SimpleGrid, SkeletonText } from '@chakra-ui/react';
+import { Box, SkeletonText } from '@chakra-ui/react';
 import { isInteger } from 'formik';
 import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
 import { useReducer } from 'react';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 import { Container } from '../../components/Container';
 import { Header } from '../../components/Header';
 import { Main } from '../../components/Main';
-import { ProjectColumn } from '../../components/ProjectColumn';
 import { Redirect } from '../../components/Redirect';
-import { Task, useProjectQuery, useUpdateTaskMutation } from '../../graphql/generated/graphql';
-import { Column, ColumnState, DragNDropAction, DragNDropStatus, initialColumns } from '../../utils/constants';
+import { useProjectQuery, useUpdateTaskMutation } from '../../graphql/generated/graphql';
+import { Column, ColumnState, DragNDropAction, DragNDropStatus } from '../../utils/constants';
 import { createUrqlClient } from '../../utils/uqrlUtils';
 
 const Project = () => {
@@ -27,7 +26,7 @@ const Project = () => {
 		if (action.type === DragNDropStatus.Moved) {
 			// run UPDATE mutation
 			// Temporary shit solution to console log inside empty .then() to allow promise without async parent
-			updateTask({ id: parseInt(action.event.draggableId), input: action.event.input }).then();
+			updateTask({ id: parseInt(action.event.draggableId), input: action.event.input }).then(() => console.log());
 
 			return { ...columnState, ...action.payload };
 		}
@@ -35,21 +34,22 @@ const Project = () => {
 		return columnState;
 	};
 
-	function populateColumns(columns: ColumnState) {
-		// check if columnState has any elements in tasks array
-		if (!Object.values(columns).some(col => col.tasks.length)) {
-			Object.values(columns).forEach(col => {
-				const filteredTasks = data?.project?.tasks?.filter(t => t.status?.toLowerCase() === col.name.toLowerCase());
-				filteredTasks?.forEach(t => {
-					if (!col.tasks.some(t2 => t2.id === t.id)) col.tasks.push(t as Task);
-				});
-			});
-		}
+	const initialColumns: ColumnState = {
+		toDo: {
+			name: 'To Do',
+			tasks: data?.project?.tasks.filter(t => t.status === 'todo'),
+		},
+		inProgress: {
+			name: 'In Progress',
+			tasks: tasks.filter(t => t.status === 'inprogress'),
+		},
+		done: {
+			name: 'Done',
+			tasks: tasks.filter(t => t.status === 'done'),
+		},
+	};
 
-		return columns;
-	}
-
-	const [columnState, dispatch] = useReducer(reducer, populateColumns(initialColumns));
+	const [columnState, dispatch] = useReducer(reducer, initialColumns);
 
 	const onDragEnd = ({ source, destination, draggableId }: DropResult) => {
 		if (!destination || (source.droppableId === destination.droppableId && destination.index === source.index)) return;
@@ -58,10 +58,10 @@ const Project = () => {
 		const endCol = columnState[destination.droppableId];
 
 		if (startCol === endCol) {
-			// reordered
-			const newList = startCol.tasks.filter((_, i) => i !== source.index);
+			const newList = Array.from(startCol.tasks);
 
-			newList.splice(destination.index, 0, startCol.tasks[source.index]);
+			newList.splice(source.index, 1);
+			newList.splice(destination.index, 0, newList.find(t => t.id === draggableId) || newList[draggableId]);
 
 			const newCol: Column = { name: startCol.name, tasks: newList };
 
@@ -71,7 +71,8 @@ const Project = () => {
 				event: { draggableId, input: { status: endCol.name } },
 			});
 		} else {
-			const newStartList = startCol.tasks.filter((_, i) => i !== source.index);
+			const newStartList = Array.from(startCol.tasks);
+			newStartList.splice(source.index, 1);
 
 			const newStartCol: Column = { name: startCol.name, tasks: newStartList };
 
@@ -99,12 +100,67 @@ const Project = () => {
 					<>
 						<Header title={`Project ${id}`} />
 
-						<DragDropContext onDragEnd={onDragEnd}>
-							<SimpleGrid columns={3} spacingX="56" spacingY="16" mb="8">
-								{Object.values(columnState).map(col => (
-									<ProjectColumn key={col.name} tasks={col.tasks} text={col.name} />
-								))}
-							</SimpleGrid>
+						<DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
+							{Object.entries(initialColumns).map(([columnId, column]) => {
+								return (
+									<div
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+											alignItems: 'center',
+										}}
+										key={columnId}
+									>
+										<h2>{column.name}</h2>
+										<div style={{ margin: 8 }}>
+											<Droppable droppableId={columnId} key={columnId}>
+												{(provided, snapshot) => {
+													return (
+														<div
+															{...provided.droppableProps}
+															ref={provided.innerRef}
+															style={{
+																background: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey',
+																padding: 4,
+																width: 250,
+																minHeight: 500,
+															}}
+														>
+															{column.items.map((item, index) => {
+																return (
+																	<Draggable key={item.id} draggableId={item.id} index={index}>
+																		{(provided, snapshot) => {
+																			return (
+																				<div
+																					ref={provided.innerRef}
+																					{...provided.draggableProps}
+																					{...provided.dragHandleProps}
+																					style={{
+																						userSelect: 'none',
+																						padding: 16,
+																						margin: '0 0 8px 0',
+																						minHeight: '50px',
+																						backgroundColor: snapshot.isDragging ? '#263B4A' : '#456C86',
+																						color: 'white',
+																						...provided.draggableProps.style,
+																					}}
+																				>
+																					{item.content}
+																				</div>
+																			);
+																		}}
+																	</Draggable>
+																);
+															})}
+															{provided.placeholder}
+														</div>
+													);
+												}}
+											</Droppable>
+										</div>
+									</div>
+								);
+							})}
 						</DragDropContext>
 					</>
 				)}
