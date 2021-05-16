@@ -56,6 +56,16 @@ export const createUrqlClient = (ssr: SSRExchange) => ({
 						);
 					},
 
+					createProject: (_result, _args, cache, _info) => {
+						const allFields = cache.inspectFields('Query');
+						console.log(allFields);
+
+						const fieldInfo = allFields.filter(i => i.fieldName === 'projects');
+						fieldInfo.forEach(i => {
+							cache.invalidate('Query', 'projects', i.arguments || {});
+						});
+					},
+
 					deleteProject: (_result, args, cache, _info) => {
 						cache.invalidate({ __typename: 'Project', id: (args as DeleteProjectMutationVariables).id });
 					},
