@@ -83,7 +83,7 @@ export type Task = {
 	project: Project;
 	title: Scalars['String'];
 	description?: Maybe<Scalars['String']>;
-	status?: Maybe<Scalars['String']>;
+	status: Scalars['String'];
 	createdAt: Scalars['DateTime'];
 	updatedAt: Scalars['DateTime'];
 };
@@ -356,7 +356,7 @@ export type TaskResolvers<
 	project?: Resolver<ResolversTypes['Project'], ParentType, ContextType>;
 	title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 	description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-	status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+	status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 	createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
 	updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -563,7 +563,6 @@ export type CurrentUserQuery = { __typename?: 'Query' } & {
 	currentUser?: Maybe<
 		{ __typename?: 'User' } & Pick<User, 'image'> & {
 				projects?: Maybe<Array<{ __typename?: 'Project' } & BaseProjectFragment>>;
-				tasks?: Maybe<Array<{ __typename?: 'Task' } & BaseTaskFragment>>;
 			} & BaseUserFragment
 	>;
 };
@@ -791,14 +790,10 @@ export const CurrentUserDocument = gql`
 			projects {
 				...BaseProject
 			}
-			tasks {
-				...BaseTask
-			}
 		}
 	}
 	${BaseUserFragmentDoc}
 	${BaseProjectFragmentDoc}
-	${BaseTaskFragmentDoc}
 `;
 
 export function useCurrentUserQuery(options: Omit<Urql.UseQueryArgs<CurrentUserQueryVariables>, 'query'> = {}) {

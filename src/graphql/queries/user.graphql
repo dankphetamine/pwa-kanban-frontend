@@ -5,9 +5,6 @@ query CurrentUser {
 		projects {
 			...BaseProject
 		}
-		assignedTasks {
-			...BaseTask
-		}
 	}
 }
 
