@@ -8,6 +8,7 @@ export const Colors = {
 
 export const Routes = {
 	home: '/',
+	about: '/about',
 	register: '/register',
 	login: '/login',
 	project: (id: number | string) => `/projects/${id}`,
@@ -44,20 +45,18 @@ export const splitCamelCase = (str: string) => {
 
 export const initialColumns: ColumnState = {
 	toDo: {
-		name: 'toDo',
+		name: 'To Do',
 		tasks: Array<Task>(),
 	},
 	inProgress: {
-		name: 'inProgress',
+		name: 'In Progress',
 		tasks: Array<Task>(),
 	},
 	done: {
-		name: 'done',
+		name: 'Done',
 		tasks: Array<Task>(),
 	},
 };
-
-export type ColumnNames = 'toDo' | 'inProgress' | 'done';
 
 export interface DragNDropAction {
 	type: DragNDropStatus;
