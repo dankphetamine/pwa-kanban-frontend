@@ -1,7 +1,7 @@
-import { Box, Heading, VStack } from '@chakra-ui/react';
+import { Box, Heading } from '@chakra-ui/react';
 import { Droppable } from 'react-beautiful-dnd';
-import { Task } from '../graphql/generated/graphql';
-import { splitCamelCase } from '../utils/constants';
+import { Task } from '../../graphql/generated/graphql';
+import { splitCamelCase } from '../../utils/constants';
 import { ProjectTask } from './ProjectTask';
 
 export const ProjectColumn = ({ text, tasks }: { text: string; tasks: Task[] }) => (
@@ -11,13 +11,11 @@ export const ProjectColumn = ({ text, tasks }: { text: string; tasks: Task[] }) 
 				<Heading textAlign="center" p={2}>
 					{splitCamelCase(text).replace(text.charAt(0), text.charAt(0).toUpperCase())}
 				</Heading>
-				<Box px={4} py={8} {...provided.droppableProps} ref={provided.innerRef}>
-					<VStack spacing={2}>
-						{tasks.length &&
-							tasks.map((t, i) => {
-								return <ProjectTask key={t.id} task={t as Task} index={i} />;
-							})}
-					</VStack>
+				<Box p={4} {...provided.droppableProps} ref={provided.innerRef}>
+					{tasks.length &&
+						tasks.map((t, i) => {
+							return <ProjectTask key={t.id} task={t as Task} index={i} />;
+						})}
 					{provided.placeholder}
 				</Box>
 			</Box>

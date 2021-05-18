@@ -1,7 +1,7 @@
 import { CloseIcon } from '@chakra-ui/icons';
 import { Box, Heading, HStack, IconButton, Text } from '@chakra-ui/react';
 import { Draggable } from 'react-beautiful-dnd';
-import { Task, useDeleteTaskMutation } from '../graphql/generated/graphql';
+import { Task, useDeleteTaskMutation } from '../../graphql/generated/graphql';
 
 export const ProjectTask = ({ task, index }: { task: Task; index: number }) => {
 	const [, deleteTask] = useDeleteTaskMutation();
