@@ -21,6 +21,7 @@ export type Scalars = {
 
 export type Query = {
 	__typename?: 'Query';
+	metrics: TaskProjectMetrics;
 	project?: Maybe<Project>;
 	projects?: Maybe<Array<Project>>;
 	task?: Maybe<Task>;
@@ -52,6 +53,13 @@ export type QueryUserArgs = {
 
 export type QueryUsersArgs = {
 	filter?: Maybe<FilterInput>;
+};
+
+export type TaskProjectMetrics = {
+	__typename?: 'TaskProjectMetrics';
+	tasks: Scalars['Int'];
+	projects: Scalars['Int'];
+	users: Scalars['Int'];
 };
 
 export type Project = {
@@ -261,6 +269,7 @@ export type ResolversTypes = {
 	Query: ResolverTypeWrapper<{}>;
 	Int: ResolverTypeWrapper<Scalars['Int']>;
 	String: ResolverTypeWrapper<Scalars['String']>;
+	TaskProjectMetrics: ResolverTypeWrapper<TaskProjectMetrics>;
 	Project: ResolverTypeWrapper<Project>;
 	User: ResolverTypeWrapper<User>;
 	ID: ResolverTypeWrapper<Scalars['ID']>;
@@ -281,6 +290,7 @@ export type ResolversParentTypes = {
 	Query: {};
 	Int: Scalars['Int'];
 	String: Scalars['String'];
+	TaskProjectMetrics: TaskProjectMetrics;
 	Project: Project;
 	User: User;
 	ID: Scalars['ID'];
@@ -300,6 +310,7 @@ export type QueryResolvers<
 	ContextType = any,
 	ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
 > = {
+	metrics?: Resolver<ResolversTypes['TaskProjectMetrics'], ParentType, ContextType>;
 	project?: Resolver<Maybe<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<QueryProjectArgs, 'id'>>;
 	projects?: Resolver<
 		Maybe<Array<ResolversTypes['Project']>>,
@@ -317,6 +328,16 @@ export type QueryResolvers<
 	user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'email'>>;
 	users?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
 	currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+};
+
+export type TaskProjectMetricsResolvers<
+	ContextType = any,
+	ParentType extends ResolversParentTypes['TaskProjectMetrics'] = ResolversParentTypes['TaskProjectMetrics']
+> = {
+	tasks?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+	projects?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+	users?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ProjectResolvers<
@@ -419,6 +440,7 @@ export type MutationResolvers<
 
 export type Resolvers<ContextType = any> = {
 	Query?: QueryResolvers<ContextType>;
+	TaskProjectMetrics?: TaskProjectMetricsResolvers<ContextType>;
 	Project?: ProjectResolvers<ContextType>;
 	User?: UserResolvers<ContextType>;
 	Task?: TaskResolvers<ContextType>;
