@@ -28,6 +28,9 @@ const NavBar = () => {
 				<Button onClick={() => router.push(Routes.home)}>
 					<Link href={Routes.home} text="home" />
 				</Button>
+				<Button onClick={() => router.push(Routes.about)}>
+					<Link href={Routes.about} text="about" />
+				</Button>
 				<Button onClick={() => router.push(Routes.projects)}>
 					<Link href={Routes.projects} />
 				</Button>
