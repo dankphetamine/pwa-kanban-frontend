@@ -3,10 +3,10 @@ import { Box, Flex, IconButton, SimpleGrid, SkeletonCircle, SkeletonText, Spacer
 import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
 import { useState } from 'react';
-import { Container } from '../../components/Container';
-import { Header } from '../../components/Header';
-import { Main } from '../../components/Main';
-import { ProjectCard } from '../../components/ProjectCard';
+import { Container } from '../../components/layout/Container';
+import { Header } from '../../components/layout/Header';
+import { Main } from '../../components/layout/Main';
+import { ProjectCard } from '../../components/ui-elements/ProjectCard';
 import { ProjectFilterInput, useCurrentUserQuery, useProjectsQuery } from '../../graphql/generated/graphql';
 import { Queries, Routes } from '../../utils/constants';
 import { createUrqlClient } from '../../utils/uqrlUtils';

@@ -1,9 +1,9 @@
 import { Box, Heading, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/layout';
 import { withUrqlClient } from 'next-urql';
-import { Container } from '../../components/Container';
-import { Header } from '../../components/Header';
-import { Main } from '../../components/Main';
-import { Redirect } from '../../components/Redirect';
+import { Container } from '../../components/layout/Container';
+import { Header } from '../../components/layout/Header';
+import { Main } from '../../components/layout/Main';
+import { Redirect } from '../../components/layout/Redirect';
 import { useCurrentUserQuery, useProjectsQuery } from '../../graphql/generated/graphql';
 import { Queries, Routes } from '../../utils/constants';
 import { createUrqlClient } from '../../utils/uqrlUtils';

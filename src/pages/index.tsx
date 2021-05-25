@@ -10,9 +10,9 @@ import {
 	Text,
 } from '@chakra-ui/react';
 import { withUrqlClient } from 'next-urql';
-import { Container } from '../components/Container';
-import { Main } from '../components/Main';
-import { Link } from '../components/NavigationLink';
+import { Container } from '../components/layout/Container';
+import { Main } from '../components/layout/Main';
+import { Link } from '../components/ui-elements/NavigationLink';
 import { Routes } from '../utils/constants';
 import { createUrqlClient } from '../utils/uqrlUtils';
 
