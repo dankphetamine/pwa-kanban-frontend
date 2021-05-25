@@ -1,15 +1,15 @@
-import { Box, SkeletonText } from '@chakra-ui/react';
+import { Box, SimpleGrid, SkeletonText } from '@chakra-ui/react';
 import { isInteger } from 'formik';
 import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 import { Container } from '../../components/Container';
 import { Header } from '../../components/Header';
 import { Main } from '../../components/Main';
 import { Redirect } from '../../components/Redirect';
 import { useProjectQuery, useUpdateTaskMutation } from '../../graphql/generated/graphql';
-import { Column, ColumnState, DragNDropAction, DragNDropStatus } from '../../utils/constants';
+import { Column, ColumnState, DragNDropAction, DragNDropStatus, initialColumns } from '../../utils/constants';
 import { createUrqlClient } from '../../utils/uqrlUtils';
 
 const Project = () => {
@@ -34,22 +34,11 @@ const Project = () => {
 		return columnState;
 	};
 
-	const initialColumns: ColumnState = {
-		toDo: {
-			name: 'To Do',
-			tasks: data?.project?.tasks.filter(t => t.status === 'todo'),
-		},
-		inProgress: {
-			name: 'In Progress',
-			tasks: tasks.filter(t => t.status === 'inprogress'),
-		},
-		done: {
-			name: 'Done',
-			tasks: tasks.filter(t => t.status === 'done'),
-		},
-	};
-
 	const [columnState, dispatch] = useReducer(reducer, initialColumns);
+
+	useEffect(() => {
+		console.log(data?.project?.tasks);
+	}, [data?.project?.tasks]);
 
 	const onDragEnd = ({ source, destination, draggableId }: DropResult) => {
 		if (!destination || (source.droppableId === destination.droppableId && destination.index === source.index)) return;
@@ -100,67 +89,69 @@ const Project = () => {
 					<>
 						<Header title={`Project ${id}`} />
 
-						<DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
-							{Object.entries(initialColumns).map(([columnId, column]) => {
-								return (
-									<div
-										style={{
-											display: 'flex',
-											flexDirection: 'column',
-											alignItems: 'center',
-										}}
-										key={columnId}
-									>
-										<h2>{column.name}</h2>
-										<div style={{ margin: 8 }}>
-											<Droppable droppableId={columnId} key={columnId}>
-												{(provided, snapshot) => {
-													return (
-														<div
-															{...provided.droppableProps}
-															ref={provided.innerRef}
-															style={{
-																background: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey',
-																padding: 4,
-																width: 250,
-																minHeight: 500,
-															}}
-														>
-															{column.items.map((item, index) => {
-																return (
-																	<Draggable key={item.id} draggableId={item.id} index={index}>
-																		{(provided, snapshot) => {
-																			return (
-																				<div
-																					ref={provided.innerRef}
-																					{...provided.draggableProps}
-																					{...provided.dragHandleProps}
-																					style={{
-																						userSelect: 'none',
-																						padding: 16,
-																						margin: '0 0 8px 0',
-																						minHeight: '50px',
-																						backgroundColor: snapshot.isDragging ? '#263B4A' : '#456C86',
-																						color: 'white',
-																						...provided.draggableProps.style,
-																					}}
-																				>
-																					{item.content}
-																				</div>
-																			);
-																		}}
-																	</Draggable>
-																);
-															})}
-															{provided.placeholder}
-														</div>
-													);
-												}}
-											</Droppable>
+						<DragDropContext onDragEnd={result => onDragEnd(result)}>
+							<SimpleGrid columns={3} spacing={16}>
+								{Object.entries(initialColumns).map(([columnId, column]) => {
+									return (
+										<div
+											style={{
+												display: 'flex',
+												flexDirection: 'column',
+												alignItems: 'center',
+											}}
+											key={columnId}
+										>
+											<h2>{column.name}</h2>
+											<div style={{ margin: 8 }}>
+												<Droppable droppableId={columnId} key={columnId}>
+													{(provided, snapshot) => {
+														return (
+															<div
+																{...provided.droppableProps}
+																ref={provided.innerRef}
+																style={{
+																	background: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey',
+																	padding: 4,
+																	width: 250,
+																	minHeight: 500,
+																}}
+															>
+																{column.tasks.map((item, index) => {
+																	return (
+																		<Draggable key={item.id} draggableId={item.id} index={index}>
+																			{(provided, snapshot) => {
+																				return (
+																					<div
+																						ref={provided.innerRef}
+																						{...provided.draggableProps}
+																						{...provided.dragHandleProps}
+																						style={{
+																							userSelect: 'none',
+																							padding: 16,
+																							margin: '0 0 8px 0',
+																							minHeight: '50px',
+																							backgroundColor: snapshot.isDragging ? '#263B4A' : '#456C86',
+																							color: 'white',
+																							...provided.draggableProps.style,
+																						}}
+																					>
+																						{item.title}
+																					</div>
+																				);
+																			}}
+																		</Draggable>
+																	);
+																})}
+																{provided.placeholder}
+															</div>
+														);
+													}}
+												</Droppable>
+											</div>
 										</div>
-									</div>
-								);
-							})}
+									);
+								})}
+							</SimpleGrid>
 						</DragDropContext>
 					</>
 				)}
