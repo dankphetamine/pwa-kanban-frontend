@@ -13,11 +13,11 @@ export const ProjectCard = ({
 	name: string;
 	description: string;
 	id: number;
-	owner: Pick<User, 'id' | 'name' | 'image'>;
+	owner?: Pick<User, 'id' | 'name' | 'image'>;
 }) => {
 	const router = useRouter();
 	const [{ data }] = useCurrentUserQuery();
-	const isOwner = data?.currentUser?.id === owner.id;
+	const isOwner = data?.currentUser?.id === owner?.id;
 	const [, deleteProject] = useDeleteProjectMutation();
 
 	return (
@@ -33,15 +33,17 @@ export const ProjectCard = ({
 				)}
 			</HStack>
 			<Text color={'messenger.400'}>{description}</Text>
-			<HStack mt={6} justifyContent="space-between">
-				<HStack spacing={4}>
-					<Avatar src={owner.image!} alt={'P P'} />
-					<Text fontWeight={500}>{owner.name}</Text>
+			{owner && (
+				<HStack mt={6} justifyContent="space-between">
+					<HStack spacing={4}>
+						<Avatar src={owner.image!} alt={'P P'} />
+						<Text fontWeight={500}>{owner.name}</Text>
+					</HStack>
+					<Button isDisabled={data?.currentUser?.id !== owner.id} onClick={() => router.push(Routes.project(id))}>
+						Show
+					</Button>
 				</HStack>
-				<Button isDisabled={data?.currentUser?.id !== owner.id} onClick={() => router.push(Routes.project(id))}>
-					Show
-				</Button>
-			</HStack>
+			)}
 		</Box>
 	);
 };
