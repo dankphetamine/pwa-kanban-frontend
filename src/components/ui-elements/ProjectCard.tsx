@@ -1,8 +1,8 @@
 import { CloseIcon } from '@chakra-ui/icons';
 import { Avatar, Box, Button, Heading, HStack, IconButton, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
-import { useCurrentUserQuery, useDeleteProjectMutation, User } from '../graphql/generated/graphql';
-import { Routes } from '../utils/constants';
+import { useCurrentUserQuery, useDeleteProjectMutation, User } from '../../graphql/generated/graphql';
+import { Routes } from '../../utils/constants';
 
 export const ProjectCard = ({
 	name,

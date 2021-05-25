@@ -1,11 +1,11 @@
 import { Avatar, Box, Button, Flex, Skeleton, Stack, useColorMode } from '@chakra-ui/react';
 import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
-import { useCurrentUserQuery, useLogOutMutation } from '../graphql/generated/graphql';
-import { Colors, Routes } from '../utils/constants';
-import { createUrqlClient } from '../utils/uqrlUtils';
-import { ColorModeSwitch } from './ColorModeSwitch';
-import { Link } from './NavigationLink';
+import { useCurrentUserQuery, useLogOutMutation } from '../../graphql/generated/graphql';
+import { Colors, Routes } from '../../utils/constants';
+import { createUrqlClient } from '../../utils/uqrlUtils';
+import { ColorModeSwitch } from '../ui-elements/ColorModeSwitch';
+import { Link } from '../ui-elements/NavigationLink';
 
 const NavBar = () => {
 	const { colorMode } = useColorMode();
