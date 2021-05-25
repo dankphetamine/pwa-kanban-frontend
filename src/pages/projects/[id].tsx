@@ -34,6 +34,16 @@ const Project = () => {
 		return columnState;
 	};
 
+	useEffect(() => {
+		if (data?.project?.tasks) {
+			Object.values(data.project.tasks).forEach(_task => {
+				Object.entries(initialColumns).forEach(([_key, _col]) => {
+					// col.tasks.push(task);
+				});
+			});
+		}
+	}, [data?.project?.tasks]);
+
 	const [columnState, dispatch] = useReducer(reducer, initialColumns);
 
 	useEffect(() => {
