@@ -2,9 +2,9 @@ import { Box, Button, Flex, Heading, Stack } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { withUrqlClient } from 'next-urql';
 import { useRouter } from 'next/dist/client/router';
-import { Container } from '../components/Container';
-import { InputField } from '../components/InputField';
-import Link from '../components/NavigationLink';
+import { Container } from '../components/layout/Container';
+import { InputField } from '../components/ui-elements/InputField';
+import { Link } from '../components/ui-elements/NavigationLink';
 import { useLoginMutation } from '../graphql/generated/graphql';
 import { Routes } from '../utils/constants';
 import { createUrqlClient } from '../utils/uqrlUtils';
@@ -30,7 +30,7 @@ const Login = () => {
 
 								const response = await login(values);
 								if (response.error) actions.setErrors({ email: response.error.message });
-								else router.push('/');
+								else router.push(Routes.home);
 							}}
 						>
 							{({ isSubmitting }) => (

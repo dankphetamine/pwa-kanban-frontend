@@ -3,3 +3,9 @@ mutation CreateProject($name: String!, $description: String!) {
 		...BaseProject
 	}
 }
+
+mutation DeleteProject($id: Int!) {
+	deleteProject(id: $id) {
+		...BaseProject
+	}
+}
