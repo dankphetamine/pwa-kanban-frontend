@@ -1,27 +1,22 @@
-query Project($id: Float!) {
+query Project($id: Int!) {
 	project(id: $id) {
 		...BaseProject
-		collaborators {
-			id
-			name
-		}
 		tasks {
-			id
-			title
+			...BaseTask
 		}
 	}
 }
 
-query Projects($filter: FilterInput) {
+query Projects($filter: ProjectFilterInput!) {
 	projects(filter: $filter) {
 		...BaseProject
-		collaborators {
+		owner {
 			id
 			name
+			image
 		}
 		tasks {
-			id
-			title
+			...BaseTask
 		}
 	}
 }

@@ -1,8 +1,14 @@
 import { Cache, cacheExchange, QueryInput } from '@urql/exchange-graphcache';
-import { simplePagination } from '@urql/exchange-graphcache/extras';
 import { SSRExchange } from 'next-urql';
 import { dedupExchange, fetchExchange } from 'urql';
-import { CurrentUserDocument, CurrentUserQuery, LoginMutation } from '../graphql/generated/graphql';
+import {
+	CurrentUserDocument,
+	CurrentUserQuery,
+	DeleteProjectMutationVariables,
+	DeleteTaskMutationVariables,
+	LoginMutation,
+} from '../graphql/generated/graphql';
+import { UpdateTaskMutationVariables } from './../graphql/generated/graphql';
 import { graphqlURL } from './constants';
 
 export function AuthCacheQuery<Result, Query>(
@@ -22,7 +28,7 @@ export const createUrqlClient = (ssr: SSRExchange) => ({
 		cacheExchange({
 			resolvers: {
 				Query: {
-					Posts: simplePagination(),
+					// Posts: simplePagination(),
 				},
 			},
 			updates: {
@@ -48,6 +54,28 @@ export const createUrqlClient = (ssr: SSRExchange) => ({
 								return { currentUser: null };
 							},
 						);
+					},
+
+					createProject: (_result, _args, cache, _info) => {
+						const allFields = cache.inspectFields('Query');
+						console.log(allFields);
+
+						const fieldInfo = allFields.filter(i => i.fieldName === 'projects');
+						fieldInfo.forEach(i => {
+							cache.invalidate('Query', 'projects', i.arguments || {});
+						});
+					},
+
+					deleteProject: (_result, args, cache, _info) => {
+						cache.invalidate({ __typename: 'Project', id: (args as DeleteProjectMutationVariables).id });
+					},
+
+					deleteTask: (_result, args, cache, _info) => {
+						cache.invalidate({ __typename: 'Task', id: (args as DeleteTaskMutationVariables).id });
+					},
+
+					updateTask: (_result, args, cache, _info) => {
+						cache.invalidate({ __typename: 'Task', id: (args as UpdateTaskMutationVariables).id });
 					},
 				},
 			},

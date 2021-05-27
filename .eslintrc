@@ -13,6 +13,7 @@
 		"prettier/@typescript-eslint",
 		"plugin:prettier/recommended"
 	],
+	"plugins": ["react-hooks"],
 	"settings": {
 		"react": {
 			"version": "detect"
@@ -23,6 +24,8 @@
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
 		"react/react-in-jsx-scope": "off",
-		"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }]
+		"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
+		"react-hooks/rules-of-hooks": "warn",
+		"react-hooks/exhaustive-deps": "warn"
 	}
 }
