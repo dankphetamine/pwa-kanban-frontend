@@ -21,8 +21,9 @@ export const Routes = {
 
 export const isServer = () => typeof window === 'undefined';
 
+const ip = 'http://94.237.124.184';
 const port = 4000;
-export const graphqlURL = `http://94.237.109.181:${port}/graphql`;
+export const graphqlURL = `${ip}:${port}/graphql`;
 
 export enum Queries {
 	limit = 10,
